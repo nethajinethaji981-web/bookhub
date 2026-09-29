@@ -1,0 +1,3402 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOKHUB - Luxury Online Bookstore</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ==========================================================================
+ 
+    1. DESIGN SYSTEM & CSS VARIABLES
+       ========================================================================== */
+    :root {
+      /* Dark Theme (Default) */
+      --bg-primary: #0b132b;
+      --bg-secondary: #1c2541;
+      --bg-card: rgba(28, 37, 65, 0.75);
+      --bg-card-hover: rgba(40, 52, 88, 0.9);
+      --text-primary: #f8f9fa;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --gold: #d4af37;
+      --gold-hover: #f3c63f;
+      --gold-light: rgba(212, 175, 55, 0.15);
+      --accent-glow: rgba(212, 175, 55, 0.3);
+      --border-color: rgba(212, 175, 55, 0.25);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --glass-bg: rgba(11, 19, 43, 0.85);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.6);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f4f6f9;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --gold: #b8860b;
+      --gold-hover: #996515;
+      --gold-light: rgba(184, 134, 11, 0.1);
+      --accent-glow: rgba(184, 134, 11, 0.2);
+      --border-color: rgba(184, 134, 11, 0.3);
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --glass-bg: rgba(255, 255, 255, 0.9);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Reset & General */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .brand-font {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: none;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+      outline: none;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      transition: var(--transition);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px var(--gold-light);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gold);
+    }
+
+    /* Hide scrollbars for dynamic carousels */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Initial Page Loader */
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--border-color);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Glassmorphism utility */
+    .glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      border-radius: var(--radius-md);
+    }
+
+    /* Gold Buttons */
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, #b8860b 100%);
+      color: #0b132b;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, var(--gold-hover) 0%, var(--gold) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .btn-outline-gold {
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-outline-gold:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+    }
+
+    /* Badge */
+    .badge {
+      background: var(--gold);
+      color: #0b132b;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 99px;
+      line-height: 1;
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .section-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+
+    /* ==========================================================================
+       2. HEADER & NAVIGATION
+       ========================================================================== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+
+    .header-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .logo-box i {
+      color: var(--gold);
+      filter: drop-shadow(0 0 8px var(--gold));
+    }
+
+    .logo-box span mark {
+      background: none;
+      color: var(--gold);
+    }
+
+    /* Desktop Navigation */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--gold);
+    }
+
+    /* Header Search Bar */
+    .header-search {
+      position: relative;
+      flex: 1;
+      max-width: 320px;
+    }
+
+    .header-search input {
+      width: 100%;
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+      height: 40px;
+      border-radius: 99px;
+      font-size: 0.88rem;
+    }
+
+    .header-search i.search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .header-search .clear-search {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: none;
+    }
+
+    /* Search Suggestions Drawer */
+    .search-suggestions {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      max-height: 350px;
+      overflow-y: auto;
+      z-index: 1100;
+      display: none;
+    }
+
+    .suggestion-item {
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+      background: var(--gold-light);
+    }
+
+    .suggestion-item img {
+      width: 36px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    /* Header Icons */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .icon-btn {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      background: var(--border-subtle);
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover {
+      background: var(--gold-light);
+      color: var(--gold);
+    }
+
+    .icon-btn .badge-counter {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-btn {
+      display: none;
+      font-size: 1.4rem;
+      color: var(--text-primary);
+    }
+
+    /* Mobile Bottom Navigation */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-color);
+      z-index: 1000;
+      padding: 0.5rem 0;
+      justify-content: space-around;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      position: relative;
+    }
+
+    .mobile-nav-item i {
+      font-size: 1.2rem;
+    }
+
+    .mobile-nav-item.active {
+      color: var(--gold);
+    }
+
+    /* ==========================================================================
+       3. MAIN LAYOUT & VIEWS CONTAINER
+       ========================================================================== */
+    main {
+      flex: 1;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==========================================================================
+       4. HERO & HOME PAGE COMPONENTS
+       ========================================================================== */
+    .hero-section {
+      position: relative;
+      background: linear-gradient(135deg, rgba(28, 37, 65, 0.95), rgba(11, 19, 43, 0.98)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1600&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      border-radius: var(--radius-lg);
+      padding: 4rem 2.5rem;
+      margin-bottom: 3rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hero-content {
+      max-width: 600px;
+      z-index: 2;
+    }
+
+    .hero-subtitle-badge {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      background: var(--gold-light);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .hero-title {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #ffffff, var(--gold));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Floating Animated Books Graphic */
+    .hero-visual {
+      position: relative;
+      width: 380px;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .floating-book {
+      position: absolute;
+      width: 140px;
+      height: 200px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .floating-book:nth-child(1) {
+      top: 10px;
+      left: 20px;
+      transform: rotate(-10deg);
+      animation-delay: 0s;
+    }
+
+    .floating-book:nth-child(2) {
+      top: 40px;
+      right: 30px;
+      transform: rotate(12deg);
+      animation-delay: 1.5s;
+    }
+
+    .floating-book:nth-child(3) {
+      bottom: 10px;
+      left: 100px;
+      transform: rotate(-3deg);
+      animation-delay: 0.7s;
+      z-index: 3;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0) rotate(var(--deg, 0deg));
+      }
+
+      50% {
+        transform: translateY(-15px) rotate(var(--deg, 0deg));
+      }
+    }
+
+    /* Stats Counter Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Book Cards & Grid */
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .book-slider-wrapper {
+      position: relative;
+    }
+
+    .book-slider {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      scroll-behavior: smooth;
+    }
+
+    .book-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      min-width: 220px;
+    }
+
+    .book-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--gold);
+    }
+
+    .book-cover-container {
+      position: relative;
+      width: 100%;
+      height: 270px;
+      overflow: hidden;
+      background: var(--bg-secondary);
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .book-card:hover .book-cover {
+      transform: scale(1.08);
+    }
+
+    .book-card-badges {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      z-index: 2;
+    }
+
+    .tag-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .tag-bestseller {
+      background: #ef4444;
+      color: white;
+    }
+
+    .tag-new {
+      background: #10b981;
+      color: white;
+    }
+
+    .tag-discount {
+      background: var(--gold);
+      color: #0b132b;
+    }
+
+    .book-actions-overlay {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: var(--transition);
+      z-index: 2;
+    }
+
+    .book-card:hover .book-actions-overlay {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .book-info {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .book-category {
+      font-size: 0.75rem;
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .book-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      /* Standard property for non‑WebKit browsers */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 2.6em;
+    }
+
+    .book-author {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .book-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .book-rating span {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .book-price-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .price-discount {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .price-original {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .btn-add-cart {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: var(--radius-sm);
+      background: var(--gold-light);
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-add-cart:hover {
+      background: var(--gold);
+      color: #0b132b;
+    }
+
+    /* Skeleton Card Loader */
+    .skeleton-card {
+      height: 380px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(90deg, var(--bg-card) 25%, var(--border-subtle) 50%, var(--bg-card) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    /* ==========================================================================
+       5. CATALOGUE & FILTER SIDEBAR
+       ========================================================================== */
+    .catalogue-layout {
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: 2rem;
+    }
+
+    .filter-sidebar {
+      padding: 1.5rem;
+      position: sticky;
+      top: 90px;
+      height: fit-content;
+    }
+
+    .filter-group {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .filter-group h4 {
+      font-size: 0.95rem;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .filter-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .filter-option input[type="checkbox"],
+    .filter-option input[type="radio"] {
+      accent-color: var(--gold);
+    }
+
+    .catalogue-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-sm);
+    }
+
+    /* ==========================================================================
+       6. BOOK DETAILS VIEW
+       ========================================================================== */
+    .details-layout {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 3rem;
+    }
+
+    .details-gallery {
+      position: relative;
+    }
+
+    .main-cover-frame {
+      position: relative;
+      width: 100%;
+      height: 520px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .main-cover-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .details-specs-table {
+      width: 100%;
+      margin: 1.5rem 0;
+      border-collapse: collapse;
+    }
+
+    .details-specs-table td {
+      padding: 0.6rem;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.9rem;
+    }
+
+    .details-specs-table td:first-child {
+      color: var(--text-muted);
+      font-weight: 500;
+      width: 35%;
+    }
+
+    /* Customer Reviews */
+    .reviews-section {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .review-card {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+    }
+
+    /* ==========================================================================
+       7. CART & CHECKOUT WIZARD
+       ========================================================================== */
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 2rem;
+    }
+
+    .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cart-table th,
+    .cart-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .qty-picker {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .qty-picker button {
+      width: 32px;
+      height: 32px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .qty-picker span {
+      width: 40px;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Checkout Multi-Step Wizard */
+    .checkout-wizard {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .wizard-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .wizard-steps::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--border-subtle);
+      z-index: 1;
+    }
+
+    .step-item {
+      position: relative;
+      z-index: 2;
+      background: var(--bg-primary);
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .step-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .step-item.active .step-circle {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #0b132b;
+    }
+
+    /* ==========================================================================
+       8. ORDER TRACKING TIMELINE
+       ========================================================================== */
+    .tracking-timeline {
+      display: flex;
+      justify-content: space-between;
+      margin: 3rem 0;
+      position: relative;
+    }
+
+    .tracking-timeline::before {
+      content: '';
+      position: absolute;
+      top: 25px;
+      left: 40px;
+      right: 40px;
+      height: 4px;
+      background: var(--border-subtle);
+    }
+
+    .timeline-node {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .node-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-node.completed .node-icon {
+      background: var(--gold);
+      color: #0b132b;
+      border-color: var(--gold);
+    }
+
+    /* ==========================================================================
+       9. ADMIN DASHBOARD & ANALYTICS CHARTS
+       ========================================================================== */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .admin-kpi-card {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .kpi-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-sm);
+      background: var(--gold-light);
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    /* Pure CSS Analytics Bar Chart */
+    .chart-container {
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .css-bar-chart {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      height: 220px;
+      padding-top: 2rem;
+      gap: 1rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar-fill {
+      width: 100%;
+      max-width: 40px;
+      background: linear-gradient(to top, var(--gold), #b8860b);
+      border-radius: 4px 4px 0 0;
+      transition: height 1s ease;
+      position: relative;
+    }
+
+    .bar-fill::after {
+      content: attr(data-val);
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    /* Category Sales Progress Bars */
+    .progress-bar-wrap {
+      margin-bottom: 1rem;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .progress-track {
+      height: 8px;
+      background: var(--border-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--gold);
+      border-radius: 99px;
+    }
+
+    /* ==========================================================================
+       10. MODALS & TOAST NOTIFICATIONS
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.95);
+      transition: var(--transition);
+    }
+
+    .modal-backdrop.active .modal-box {
+      transform: scale(1);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .modal-close-btn:hover {
+      color: var(--gold);
+    }
+
+    /* Toast Notification Container */
+    #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .toast {
+      padding: 0.9rem 1.25rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 280px;
+      animation: slideInRight 0.3s forwards;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Compare Drawer Floating Bar */
+    .compare-bar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-bg);
+      border: 1px solid var(--gold);
+      padding: 0.75rem 1.5rem;
+      border-radius: 99px;
+      box-shadow: var(--shadow-lg);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: 3rem 1.5rem 1.5rem;
+      margin-top: 4rem;
+    }
+
+    .footer-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Responsive Media Queries */
+    @media (max-width: 992px) {
+      .hero-section {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-visual {
+        display: none;
+      }
+
+      .catalogue-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .details-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cart-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      .nav-links,
+      .header-search {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .mobile-bottom-nav {
+        display: flex;
+      }
+
+      main {
+        padding-bottom: 5rem;
+      }
+
+      .hero-title {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 0. PAGE LOADER -->
+  <div id="page-loader">
+    <div class="spinner"></div>
+    <h3 style="margin-top: 1.5rem; color: var(--gold);" class="brand-font">BOOKHUB</h3>
+    <p style="color: var(--text-secondary); font-size: 0.85rem;">Discover. Read. Learn. Grow.</p>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container"></div>
+
+  <!-- 1. HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="logo-box" onclick="navigateTo('home')">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <span>BOOK<mark>HUB</mark></span>
+      </div>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#" onclick="navigateTo('home')" id="nav-home" class="active">Home</a></li>
+          <li><a href="#" onclick="navigateTo('catalogue')" id="nav-catalogue">Books</a></li>
+          <li><a href="#" onclick="navigateTo('categories')" id="nav-categories">Categories</a></li>
+          <li><a href="#" onclick="navigateTo('offers')" id="nav-offers">Offers 🔥</a></li>
+          <li><a href="#" onclick="navigateTo('faq')" id="nav-faq">FAQ</a></li>
+          <li><a href="#" onclick="navigateTo('contact')" id="nav-contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Instant Live Search Bar -->
+      <div class="header-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="global-search-input" placeholder="Search by title, author, category..."
+          oninput="handleSearchInput(this.value)">
+        <i class="fa-solid fa-xmark clear-search" id="clear-search-btn" onclick="clearSearch()"></i>
+        <div class="search-suggestions" id="search-suggestions-box"></div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon" id="theme-icon"></i>
+        </button>
+
+        <!-- Wishlist -->
+        <button class="icon-btn" onclick="navigateTo('wishlist')" title="Wishlist">
+          <i class="fa-regular fa-heart"></i>
+          <span class="badge badge-counter" id="wishlist-badge">0</span>
+        </button>
+
+        <!-- Cart -->
+        <button class="icon-btn" onclick="navigateTo('cart')" title="Shopping Cart">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge badge-counter" id="cart-badge">0</span>
+        </button>
+
+        <!-- User Profile / Admin / Login -->
+        <button class="icon-btn" onclick="openUserMenu()" title="Account & Admin">
+          <i class="fa-regular fa-user"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <div class="mobile-bottom-nav">
+    <a href="#" class="mobile-nav-item active" onclick="navigateTo('home')"><i class="fa-solid fa-house"></i>Home</a>
+    <a href="#" class="mobile-nav-item" onclick="navigateTo('catalogue')"><i class="fa-solid fa-book"></i>Books</a>
+    <a href="#" class="mobile-nav-item" onclick="navigateTo('categories')"><i
+        class="fa-solid fa-layer-group"></i>Categories</a>
+    <a href="#" class="mobile-nav-item" onclick="navigateTo('wishlist')"><i class="fa-solid fa-heart"></i>Wishlist</a>
+    <a href="#" class="mobile-nav-item" onclick="navigateTo('cart')"><i class="fa-solid fa-cart-shopping"></i>Cart</a>
+    <a href="#" class="mobile-nav-item" onclick="navigateTo('profile')"><i class="fa-solid fa-user"></i>Profile</a>
+  </div>
+
+  <!-- MAIN VIEWS WRAPPER -->
+  <main>
+
+    <!-- VIEW 1: HOME PAGE -->
+    <section id="view-home" class="view-section active">
+      <!-- Luxury Hero -->
+      <div class="hero-section">
+        <div class="hero-content">
+          <span class="hero-subtitle-badge"><i class="fa-solid fa-crown"></i> Premier Bookstore</span>
+          <h1 class="hero-title">Discover Your Next Favourite Book</h1>
+          <p class="hero-desc">Explore. Read. Learn. Grow. Immerse yourself in over 50+ curated luxury editions,
+            bestselling fiction, technical guides, and timeless classics.</p>
+          <div class="hero-btns">
+            <button class="btn-gold" onclick="navigateTo('catalogue')"><i class="fa-solid fa-compass"></i> Explore
+              Books</button>
+            <button class="btn-outline-gold" onclick="filterByPreset('bestsellers')"><i class="fa-solid fa-fire"></i>
+              Shop Best Sellers</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop"
+            class="floating-book" alt="Book 1">
+          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop"
+            class="floating-book" alt="Book 2">
+          <img src="https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop"
+            class="floating-book" alt="Book 3">
+        </div>
+      </div>
+
+      <!-- Animated Stats Bar -->
+      <div class="stats-bar glass-panel">
+        <div class="stat-card">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Curated Titles</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">18</div>
+          <div class="stat-label">Diverse Categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4.9 ★</div>
+          <div class="stat-label">Reader Satisfaction</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">24 Hours</div>
+          <div class="stat-label">Express Delivery</div>
+        </div>
+      </div>
+
+      <!-- Section: Bestselling Books Slider -->
+      <div style="margin-bottom: 3rem;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Best Selling Books</h2>
+            <p class="section-subtitle">Top choice reads loved by thousands of book enthusiasts</p>
+          </div>
+          <button class="btn-outline-gold" style="padding: 0.4rem 1rem; font-size: 0.85rem;"
+            onclick="filterByPreset('bestsellers')">View All</button>
+        </div>
+        <div class="book-slider no-scrollbar" id="home-bestsellers-slider"></div>
+      </div>
+
+      <!-- Section: Trending Technical & Science -->
+      <div style="margin-bottom: 3rem;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Computer Science & AI Tech</h2>
+            <p class="section-subtitle">Master modern programming, artificial intelligence & web engineering</p>
+          </div>
+          <button class="btn-outline-gold" style="padding: 0.4rem 1rem; font-size: 0.85rem;"
+            onclick="filterByCategory('Computer Science')">View All</button>
+        </div>
+        <div class="book-slider no-scrollbar" id="home-tech-slider"></div>
+      </div>
+
+      <!-- Section: Tamil Classics & Regional Literature -->
+      <div style="margin-bottom: 3rem;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Tamil Literature & Historical Classics</h2>
+            <p class="section-subtitle">Immortal novels, epic history, and iconic Tamil writings</p>
+          </div>
+          <button class="btn-outline-gold" style="padding: 0.4rem 1rem; font-size: 0.85rem;"
+            onclick="filterByCategory('Tamil Books')">View All</button>
+        </div>
+        <div class="book-slider no-scrollbar" id="home-tamil-slider"></div>
+      </div>
+
+      <!-- Recently Viewed Section -->
+      <div id="recently-viewed-container" style="display: none; margin-bottom: 3rem;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Recently Viewed</h2>
+            <p class="section-subtitle">Pick up right where you left off</p>
+          </div>
+        </div>
+        <div class="book-slider no-scrollbar" id="home-recently-viewed-slider"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: CATALOGUE / SEARCH PAGE -->
+    <section id="view-catalogue" class="view-section">
+      <div class="catalogue-layout">
+        <!-- Sidebar Filters -->
+        <aside class="filter-sidebar glass-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 class="brand-font" style="color: var(--gold); font-size: 1.2rem;"><i class="fa-solid fa-filter"></i>
+              Filters</h3>
+            <button onclick="resetFilters()"
+              style="color: var(--text-muted); font-size: 0.8rem; text-decoration: underline;">Clear All</button>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <h4>Categories</h4>
+            <div id="filter-categories-list"></div>
+          </div>
+
+          <!-- Price Range Slider -->
+          <div class="filter-group">
+            <h4>Price Range</h4>
+            <input type="range" id="filter-price-slider" min="100" max="2500" step="50" value="2500"
+              oninput="updatePriceLabel(this.value)" style="width: 100%;">
+            <div
+              style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.4rem;">
+              <span>₹100</span>
+              <span id="price-slider-val" style="color: var(--gold); font-weight: 700;">Up to ₹2500</span>
+            </div>
+          </div>
+
+          <!-- Rating Filter -->
+          <div class="filter-group">
+            <h4>Minimum Rating</h4>
+            <div class="filter-option"><input type="radio" name="filter-rating" value="0" checked
+                onchange="applyFilters()"> All Ratings</div>
+            <div class="filter-option"><input type="radio" name="filter-rating" value="4.5" onchange="applyFilters()">
+              4.5★ & Above</div>
+            <div class="filter-option"><input type="radio" name="filter-rating" value="4.0" onchange="applyFilters()">
+              4.0★ & Above</div>
+          </div>
+
+          <!-- Language Filter -->
+          <div class="filter-group">
+            <h4>Language</h4>
+            <div class="filter-option"><input type="checkbox" value="English" class="filter-lang-cb"
+                onchange="applyFilters()"> English</div>
+            <div class="filter-option"><input type="checkbox" value="Tamil" class="filter-lang-cb"
+                onchange="applyFilters()"> Tamil</div>
+          </div>
+        </aside>
+
+        <!-- Catalogue Grid Content -->
+        <div>
+          <div class="catalogue-toolbar glass-panel">
+            <span style="color: var(--text-secondary); font-size: 0.9rem;" id="catalogue-count-label">Showing 50
+              books</span>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <label style="font-size: 0.85rem; color: var(--text-secondary);">Sort By:</label>
+              <select id="sort-select" onchange="applyFilters()" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                <option value="popular">Most Popular</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rating</option>
+                <option value="discount">Highest Discount</option>
+                <option value="newest">Newest Arrivals</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="book-grid" id="catalogue-books-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: BOOK DETAILS PAGE -->
+    <section id="view-details" class="view-section">
+      <button class="btn-outline-gold" style="margin-bottom: 1.5rem; padding: 0.4rem 1rem; font-size: 0.85rem;"
+        onclick="navigateTo('catalogue')"><i class="fa-solid fa-arrow-left"></i> Back to Books</button>
+
+      <div class="details-layout" id="details-container"></div>
+
+      <!-- Recommendation Section -->
+      <div style="margin-top: 4rem;">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">Recommended For You</h2>
+            <p class="section-subtitle">Readers who viewed this book also liked</p>
+          </div>
+        </div>
+        <div class="book-slider no-scrollbar" id="details-recommendations-slider"></div>
+      </div>
+
+      <!-- Customer Reviews & Submit Form -->
+      <div class="reviews-section">
+        <h3 class="brand-font" style="font-size: 1.5rem; color: var(--text-primary); margin-bottom: 1.5rem;">Customer
+          Reviews & Ratings</h3>
+        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem;">
+          <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
+            <div style="font-size: 3rem; font-weight: 800; color: var(--gold);" id="review-stat-avg">4.8</div>
+            <div style="color: var(--gold); margin-bottom: 0.5rem;" id="review-stat-stars"><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+            <div style="color: var(--text-secondary); font-size: 0.85rem;" id="review-stat-count">Based on 24 reviews
+            </div>
+          </div>
+          <div>
+            <form onsubmit="submitReview(event)" class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+              <h4 style="margin-bottom: 1rem; color: var(--gold);">Write a Customer Review</h4>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <input type="text" id="review-name" placeholder="Your Name" required>
+                <select id="review-rating" required>
+                  <option value="5">5 Stars - Outstanding</option>
+                  <option value="4">4 Stars - Very Good</option>
+                  <option value="3">3 Stars - Average</option>
+                  <option value="2">2 Stars - Below Average</option>
+                  <option value="1">1 Star - Poor</option>
+                </select>
+              </div>
+              <textarea id="review-text" rows="3" placeholder="Share your detailed thoughts about this book..." required
+                style="width: 100%; margin-bottom: 1rem;"></textarea>
+              <button type="submit" class="btn-gold"><i class="fa-solid fa-paper-plane"></i> Submit Review</button>
+            </form>
+
+            <div id="reviews-list-container"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: CATEGORIES PAGE -->
+    <section id="view-categories" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Browse Book Categories</h2>
+          <p class="section-subtitle">Select a domain to explore tailored collections</p>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;"
+        id="categories-grid"></div>
+    </section>
+
+    <!-- VIEW 5: OFFERS PAGE -->
+    <section id="view-offers" class="view-section">
+      <div class="hero-section"
+        style="background: linear-gradient(135deg, rgba(184, 134, 11, 0.3), rgba(11, 19, 43, 0.95)); padding: 3rem;">
+        <div>
+          <span class="hero-subtitle-badge">Limited Time Festival Sale</span>
+          <h1 class="hero-title">Exclusive Luxury Discounts</h1>
+          <p class="hero-desc">Enjoy up to 30% OFF on premium technical books, classic Tamil history novels, and
+            fiction.</p>
+          <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <div class="glass-panel" style="padding: 0.75rem 1.25rem; text-align: center;"><span id="timer-hours"
+                style="font-size: 1.5rem; font-weight: 800; color: var(--gold);">08</span><br><small
+                style="font-size: 0.7rem; color: var(--text-muted);">HOURS</small></div>
+            <div class="glass-panel" style="padding: 0.75rem 1.25rem; text-align: center;"><span id="timer-mins"
+                style="font-size: 1.5rem; font-weight: 800; color: var(--gold);">42</span><br><small
+                style="font-size: 0.7rem; color: var(--text-muted);">MINS</small></div>
+            <div class="glass-panel" style="padding: 0.75rem 1.25rem; text-align: center;"><span id="timer-secs"
+                style="font-size: 1.5rem; font-weight: 800; color: var(--gold);">19</span><br><small
+                style="font-size: 0.7rem; color: var(--text-muted);">SECS</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="book-grid" id="offers-books-grid" style="margin-top: 2rem;"></div>
+    </section>
+
+    <!-- VIEW 6: WISHLIST PAGE -->
+    <section id="view-wishlist" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">My Saved Wishlist</h2>
+          <p class="section-subtitle">Keep track of books you plan to purchase</p>
+        </div>
+        <button class="btn-outline-gold" onclick="moveAllWishlistToCart()"><i class="fa-solid fa-cart-plus"></i> Move
+          All to Cart</button>
+      </div>
+      <div class="book-grid" id="wishlist-books-grid"></div>
+    </section>
+
+    <!-- VIEW 7: SHOPPING CART PAGE -->
+    <section id="view-cart" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Shopping Cart</h2>
+          <p class="section-subtitle">Review items in your order bag</p>
+        </div>
+      </div>
+
+      <div class="cart-layout">
+        <div class="glass-panel" style="padding: 1.5rem; overflow-x: auto;">
+          <table class="cart-table" id="cart-items-table">
+            <thead>
+              <tr style="color: var(--gold); border-bottom: 1px solid var(--border-color);">
+                <th>Book</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="cart-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem; height: fit-content;">
+          <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.25rem;">Order Summary</h3>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.9rem;">
+            <span>Subtotal</span>
+            <span id="cart-summary-subtotal">₹0</span>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.9rem; color: var(--success);"
+            id="cart-summary-discount-row">
+            <span>Coupon Discount</span>
+            <span id="cart-summary-discount">-₹0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.9rem;">
+            <span>Delivery Charges</span>
+            <span style="color: var(--success);">FREE</span>
+          </div>
+          <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 1rem 0;">
+          <div
+            style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 800; color: var(--gold);">
+            <span>Grand Total</span>
+            <span id="cart-summary-total">₹0</span>
+          </div>
+
+          <!-- Coupon Input -->
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+            <input type="text" id="coupon-code-input" placeholder="Promo code (e.g. BOOK10)"
+              style="flex: 1; text-transform: uppercase;">
+            <button class="btn-outline-gold" onclick="applyCouponCode()">Apply</button>
+          </div>
+          <small style="display: block; color: var(--text-muted); margin-bottom: 1.5rem;">Try coupons: <mark
+              style="background: none; color: var(--gold);">BOOK10</mark>, <mark
+              style="background: none; color: var(--gold);">WELCOME20</mark>, <mark
+              style="background: none; color: var(--gold);">READ15</mark></small>
+
+          <button class="btn-gold" style="width: 100%; justify-content: center;"
+            onclick="navigateTo('checkout')">Proceed to Checkout <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 8: CHECKOUT MULTI-STEP WIZARD -->
+    <section id="view-checkout" class="view-section">
+      <div class="checkout-wizard">
+        <div class="wizard-steps">
+          <div class="step-item active" id="step-node-1">
+            <div class="step-circle">1</div><small>Information</small>
+          </div>
+          <div class="step-item" id="step-node-2">
+            <div class="step-circle">2</div><small>Address</small>
+          </div>
+          <div class="step-item" id="step-node-3">
+            <div class="step-circle">3</div><small>Summary</small>
+          </div>
+          <div class="step-item" id="step-node-4">
+            <div class="step-circle">4</div><small>Payment</small>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 2rem;">
+          <!-- STEP 1: CUSTOMER INFO -->
+          <div id="checkout-step-1" class="checkout-step-content">
+            <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.5rem;">Step 1: Customer Contact
+              Information</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">Full Name *</label><input
+                  type="text" id="chk-name" value="Sanjay Kumar" style="width: 100%;"></div>
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">Email Address *</label><input
+                  type="email" id="chk-email" value="sanjay@example.com" style="width: 100%;"></div>
+            </div>
+            <div style="margin-bottom: 1.5rem;"><label style="font-size: 0.85rem; color: var(--text-secondary);">Phone
+                Number *</label><input type="tel" id="chk-phone" value="+91 9876543210" style="width: 100%;"></div>
+            <button class="btn-gold" onclick="nextCheckoutStep(2)">Continue to Delivery Address <i
+                class="fa-solid fa-arrow-right"></i></button>
+          </div>
+
+          <!-- STEP 2: ADDRESS -->
+          <div id="checkout-step-2" class="checkout-step-content" style="display: none;">
+            <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.5rem;">Step 2: Shipping & Delivery
+              Address</h3>
+            <div style="margin-bottom: 1rem;"><label style="font-size: 0.85rem; color: var(--text-secondary);">Street
+                Address *</label><input type="text" id="chk-address" value="12, Main Road, Anna Nagar"
+                style="width: 100%;"></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">City *</label><input type="text"
+                  id="chk-city" value="Chennai" style="width: 100%;"></div>
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">State *</label><input type="text"
+                  id="chk-state" value="Tamil Nadu" style="width: 100%;"></div>
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">Pincode *</label><input type="text"
+                  id="chk-pincode" value="600040" style="width: 100%;"></div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+              <button class="btn-outline-gold" onclick="nextCheckoutStep(1)">Back</button>
+              <button class="btn-gold" onclick="nextCheckoutStep(3)">Review Order Summary <i
+                  class="fa-solid fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 3: SUMMARY -->
+          <div id="checkout-step-3" class="checkout-step-content" style="display: none;">
+            <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.5rem;">Step 3: Order Review</h3>
+            <div id="checkout-items-summary" style="margin-bottom: 1.5rem;"></div>
+            <div style="display: flex; gap: 1rem;">
+              <button class="btn-outline-gold" onclick="nextCheckoutStep(2)">Back</button>
+              <button class="btn-gold" onclick="nextCheckoutStep(4)">Proceed to Demo Payment <i
+                  class="fa-solid fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 4: PAYMENT DEMO -->
+          <div id="checkout-step-4" class="checkout-step-content" style="display: none;">
+            <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.5rem;">Step 4: Select Demo Payment Method
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--warning); margin-bottom: 1.5rem;"><i
+                class="fa-solid fa-circle-info"></i> Demo Mode Only: Do not enter real credit card numbers or banking
+              secrets.</p>
+
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+              <label class="glass-panel"
+                style="padding: 1rem; display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+                <input type="radio" name="payment-method" value="COD" checked>
+                <div><strong>Cash on Delivery (COD)</strong><br><small style="color: var(--text-secondary);">Pay in cash
+                    when order is delivered to your doorstep</small></div>
+              </label>
+              <label class="glass-panel"
+                style="padding: 1rem; display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+                <input type="radio" name="payment-method" value="UPI">
+                <div><strong>UPI Demo (GPay / PhonePe / Paytm)</strong><br><small
+                    style="color: var(--text-secondary);">Simulate instant mobile QR / VPA payment</small></div>
+              </label>
+              <label class="glass-panel"
+                style="padding: 1rem; display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+                <input type="radio" name="payment-method" value="CARD">
+                <div><strong>Credit / Debit Card (Demo Sandbox)</strong><br><small
+                    style="color: var(--text-secondary);">Test payment with simulated authorization</small></div>
+              </label>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+              <button class="btn-outline-gold" onclick="nextCheckoutStep(3)">Back</button>
+              <button class="btn-gold" onclick="placeOrderNow()"><i class="fa-solid fa-check-circle"></i> Place Order
+                Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 9: ORDER CONFIRMATION -->
+    <section id="view-order-success" class="view-section">
+      <div class="glass-panel" style="max-width: 650px; margin: 2rem auto; padding: 3rem; text-align: center;">
+        <div
+          style="width: 80px; height: 80px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 1.5rem; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);">
+          ✓
+        </div>
+        <h2 class="brand-font" style="font-size: 2.2rem; color: var(--gold); margin-bottom: 0.5rem;">Order Placed
+          Successfully!</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Thank you for shopping with BOOKHUB. Your order
+          details are below.</p>
+
+        <div class="glass-panel" style="padding: 1.5rem; text-align: left; margin-bottom: 2rem;"
+          id="order-success-details-box"></div>
+
+        <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <button class="btn-gold" id="btn-track-success-order"><i class="fa-solid fa-truck"></i> Track Order
+            Timeline</button>
+          <button class="btn-outline-gold" onclick="navigateTo('my-orders')"><i class="fa-solid fa-box"></i> View All My
+            Orders</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 10: ORDER TRACKING TIMELINE -->
+    <section id="view-track-order" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Live Order Tracking</h2>
+          <p class="section-subtitle" id="track-order-id-label">Tracking Order #BK20260824001</p>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="padding: 2.5rem; margin-bottom: 2rem;">
+        <div class="tracking-timeline" id="tracking-timeline-box"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 11: MY ORDERS PAGE -->
+    <section id="view-my-orders" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">My Order History</h2>
+          <p class="section-subtitle">Track, view, or reorder your recent purchases</p>
+        </div>
+      </div>
+      <div id="my-orders-list"></div>
+    </section>
+
+    <!-- VIEW 12: USER PROFILE PAGE -->
+    <section id="view-profile" class="view-section">
+      <div style="max-width: 750px; margin: 0 auto;">
+        <div class="glass-panel" style="padding: 2.5rem;">
+          <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
+            <div
+              style="width: 80px; height: 80px; border-radius: 50%; background: var(--gold-light); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; color: var(--gold);">
+              <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <div>
+              <h2 class="brand-font" id="profile-display-name">Sanjay Kumar</h2>
+              <p style="color: var(--text-secondary);" id="profile-display-email">sanjay@example.com</p>
+              <span class="badge" style="margin-top: 0.4rem; display: inline-block;">Premium Member</span>
+            </div>
+          </div>
+
+          <form onsubmit="saveProfileDetails(event)">
+            <h4 style="color: var(--gold); margin-bottom: 1rem;">Edit Personal Profile</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">Full Name</label><input type="text"
+                  id="prof-name" value="Sanjay Kumar"></div>
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">Email</label><input type="email"
+                  id="prof-email" value="sanjay@example.com"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">Phone</label><input type="tel"
+                  id="prof-phone" value="+91 9876543210"></div>
+              <div><label style="font-size: 0.85rem; color: var(--text-secondary);">Saved Address</label><input
+                  type="text" id="prof-address" value="12, Main Road, Anna Nagar, Tamil Nadu"></div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+              <button type="submit" class="btn-gold">Save Changes</button>
+              <button type="button" class="btn-outline-gold" onclick="navigateTo('admin')"><i
+                  class="fa-solid fa-gauge-high"></i> Open Admin Dashboard</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 13: ADMIN DASHBOARD & ANALYTICS -->
+    <section id="view-admin" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Admin Management & Analytics</h2>
+          <p class="section-subtitle">Store metrics, inventory management & order dispatch console</p>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="admin-grid">
+        <div class="glass-panel admin-kpi-card">
+          <div class="kpi-icon"><i class="fa-solid fa-book"></i></div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 800;" id="adm-kpi-books">50</div><small
+              style="color: var(--text-secondary);">Total Books</small>
+          </div>
+        </div>
+        <div class="glass-panel admin-kpi-card">
+          <div class="kpi-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 800;" id="adm-kpi-orders">14</div><small
+              style="color: var(--text-secondary);">Total Orders</small>
+          </div>
+        </div>
+        <div class="glass-panel admin-kpi-card">
+          <div class="kpi-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 800;" id="adm-kpi-sales">₹48,250</div><small
+              style="color: var(--text-secondary);">Total Revenue</small>
+          </div>
+        </div>
+        <div class="glass-panel admin-kpi-card">
+          <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+          <div>
+            <div style="font-size: 1.6rem; font-weight: 800;">128</div><small
+              style="color: var(--text-secondary);">Active Users</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Charts -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div class="glass-panel chart-container">
+          <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1rem;">Monthly Sales Overview (₹)</h3>
+          <div class="css-bar-chart">
+            <div class="bar-group">
+              <div class="bar-fill" style="height: 45%;" data-val="₹18k"></div><small
+                style="font-size: 0.75rem; color: var(--text-secondary);">Apr</small>
+            </div>
+            <div class="bar-group">
+              <div class="bar-fill" style="height: 60%;" data-val="₹24k"></div><small
+                style="font-size: 0.75rem; color: var(--text-secondary);">May</small>
+            </div>
+            <div class="bar-group">
+              <div class="bar-fill" style="height: 75%;" data-val="₹32k"></div><small
+                style="font-size: 0.75rem; color: var(--text-secondary);">Jun</small>
+            </div>
+            <div class="bar-group">
+              <div class="bar-fill" style="height: 65%;" data-val="₹28k"></div><small
+                style="font-size: 0.75rem; color: var(--text-secondary);">Jul</small>
+            </div>
+            <div class="bar-group">
+              <div class="bar-fill" style="height: 95%;" data-val="₹48k"></div><small
+                style="font-size: 0.75rem; color: var(--text-secondary);">Aug</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.5rem;">Top Category Breakdown</h3>
+          <div class="progress-bar-wrap">
+            <div class="progress-info"><span>Computer Science & AI</span><span>38%</span></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 38%;"></div>
+            </div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-info"><span>Tamil Historical Classics</span><span>27%</span></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 27%;"></div>
+            </div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-info"><span>Bestselling Fiction</span><span>20%</span></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 20%;"></div>
+            </div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-info"><span>Finance & Business</span><span>15%</span></div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width: 15%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Management & Order Status Table -->
+      <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 class="brand-font" style="color: var(--gold);">Recent Customer Orders Console</h3>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="cart-table">
+            <thead>
+              <tr style="color: var(--gold);">
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Update Dispatch Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 14: CONTACT PAGE -->
+    <section id="view-contact" class="view-section">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;">
+        <div class="glass-panel" style="padding: 2.5rem;">
+          <h2 class="brand-font" style="color: var(--gold); margin-bottom: 1rem;">Get In Touch</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 2rem;">Have questions about book availability, bulk
+            institutional orders, or shipping tracking?</p>
+
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <i class="fa-solid fa-location-dot" style="color: var(--gold); font-size: 1.5rem;"></i>
+              <div><strong>Address</strong><br><small style="color: var(--text-secondary);">Main Road, Tamil Nadu,
+                  India</small></div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <i class="fa-solid fa-phone" style="color: var(--gold); font-size: 1.5rem;"></i>
+              <div><strong>Phone</strong><br><small style="color: var(--text-secondary);">+91 98765 43210</small></div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <i class="fa-solid fa-envelope" style="color: var(--gold); font-size: 1.5rem;"></i>
+              <div><strong>Email</strong><br><small style="color: var(--text-secondary);">support@bookhub.com</small>
+              </div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <i class="fa-solid fa-clock" style="color: var(--gold); font-size: 1.5rem;"></i>
+              <div><strong>Opening Hours</strong><br><small style="color: var(--text-secondary);">9:00 AM – 9:00 PM
+                  (Mon-Sat)</small></div>
+            </div>
+          </div>
+        </div>
+
+        <form class="glass-panel" style="padding: 2.5rem;" onsubmit="handleContactSubmit(event)">
+          <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.5rem;">Send Us a Message</h3>
+          <div style="margin-bottom: 1rem;"><label style="font-size: 0.85rem; color: var(--text-secondary);">Your
+              Name</label><input type="text" required style="width: 100%;"></div>
+          <div style="margin-bottom: 1rem;"><label style="font-size: 0.85rem; color: var(--text-secondary);">Your
+              Email</label><input type="email" required style="width: 100%;"></div>
+          <div style="margin-bottom: 1.5rem;"><label
+              style="font-size: 0.85rem; color: var(--text-secondary);">Message</label><textarea rows="4" required
+              style="width: 100%;"></textarea></div>
+          <button type="submit" class="btn-gold" style="width: 100%; justify-content: center;"><i
+              class="fa-solid fa-paper-plane"></i> Send Message</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- VIEW 15: FAQ PAGE -->
+    <section id="view-faq" class="view-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">Everything you need to know about ordering and delivery</p>
+        </div>
+      </div>
+
+      <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;"
+        id="faq-accordion-container"></div>
+    </section>
+
+  </main>
+
+  <!-- COMPARE DRAWER FLOATING BAR -->
+  <div class="compare-bar" id="compare-floating-bar" style="display: none;">
+    <span style="font-size: 0.9rem;"><i class="fa-solid fa-code-compare" style="color: var(--gold);"></i> Comparing
+      <strong id="compare-count-num" style="color: var(--gold);">0</strong>/3 books</span>
+    <div style="display: flex; gap: 0.75rem;">
+      <button class="btn-gold" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;" onclick="openCompareModal()">Compare
+        Now</button>
+      <button class="btn-outline-gold" style="padding: 0.4rem 0.7rem; font-size: 0.85rem;"
+        onclick="clearCompareList()">Clear</button>
+    </div>
+  </div>
+
+  <!-- QUICK VIEW MODAL -->
+  <div class="modal-backdrop" id="quick-view-modal">
+    <div class="modal-box" style="max-width: 800px;">
+      <button class="modal-close-btn" onclick="closeModal('quick-view-modal')"><i
+          class="fa-solid fa-xmark"></i></button>
+      <div id="quick-view-modal-content"></div>
+    </div>
+  </div>
+
+  <!-- COMPARE MODAL -->
+  <div class="modal-backdrop" id="compare-modal">
+    <div class="modal-box" style="max-width: 950px;">
+      <button class="modal-close-btn" onclick="closeModal('compare-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <h3 class="brand-font" style="color: var(--gold); margin-bottom: 1.5rem;"><i class="fa-solid fa-code-compare"></i>
+        Book Features Comparison</h3>
+      <div id="compare-modal-content" style="overflow-x: auto;"></div>
+    </div>
+  </div>
+
+  <!-- PWA INSTALL SIMULATOR MODAL -->
+  <div class="modal-backdrop" id="pwa-modal">
+    <div class="modal-box" style="max-width: 480px; text-align: center;">
+      <button class="modal-close-btn" onclick="closeModal('pwa-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div style="font-size: 3rem; color: var(--gold); margin-bottom: 1rem;"><i
+          class="fa-solid fa-mobile-screen-button"></i></div>
+      <h3 class="brand-font" style="color: var(--gold); margin-bottom: 0.5rem;">Install BOOKHUB Web App</h3>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Experience lightning fast
+        browsing, offline wishlist management, and native app feeling directly on your home screen.</p>
+      <button class="btn-gold" style="width: 100%; justify-content: center;" onclick="triggerPWAInstall()"><i
+          class="fa-solid fa-download"></i> Add to Home Screen</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="logo-box" style="margin-bottom: 1rem;">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>BOOK<mark>HUB</mark></span>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6;">
+          Your premier online luxury bookstore. Discover timeless classics, Tamil history masterpieces, and cutting-edge
+          software engineering books.
+        </p>
+      </div>
+
+      <div>
+        <h4 style="color: var(--gold); margin-bottom: 1rem;">Quick Navigation</h4>
+        <ul
+          style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.88rem; color: var(--text-secondary);">
+          <li><a href="#" onclick="navigateTo('home')">Home</a></li>
+          <li><a href="#" onclick="navigateTo('catalogue')">Book Catalogue</a></li>
+          <li><a href="#" onclick="navigateTo('categories')">Categories</a></li>
+          <li><a href="#" onclick="navigateTo('offers')">Exclusive Offers</a></li>
+          <li><a href="#" onclick="openPwaInstallModal()">Install App Option</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="color: var(--gold); margin-bottom: 1rem;">Top Categories</h4>
+        <ul
+          style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.88rem; color: var(--text-secondary);">
+          <li><a href="#" onclick="filterByCategory('Computer Science')">Computer Science</a></li>
+          <li><a href="#" onclick="filterByCategory('Tamil Books')">Tamil Novels</a></li>
+          <li><a href="#" onclick="filterByCategory('Fiction')">Fiction & Literature</a></li>
+          <li><a href="#" onclick="filterByCategory('Data Science')">Artificial Intelligence</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 style="color: var(--gold); margin-bottom: 1rem;">Newsletter</h4>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">Subscribe to receive weekly
+          luxury book picks & discount coupons.</p>
+        <form onsubmit="handleNewsletterSubmit(event)" style="display: flex; gap: 0.5rem;">
+          <input type="email" placeholder="Your Email" required style="font-size: 0.85rem; flex: 1;">
+          <button type="submit" class="btn-gold" style="padding: 0.5rem 0.8rem;"><i
+              class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+
+    <div
+      style="max-width: 1300px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+      <div>© 2026 BOOKHUB Inc. All rights reserved. College Project Demo.</div>
+      <div>Designed with Luxury Aesthetics & Pure HTML5/CSS3/JS</div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       JAVASCRIPT APPLICATION LOGIC & SAMPLE DATA
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       1. 50 REALISTIC SAMPLE BOOKS SEED DATA
+       -------------------------------------------------------------------------- */
+    const SAMPLE_BOOKS = [
+      // Tamil Books (1-5)
+      { id: 1, title: "Ponniyin Selvan - Part 1 (First Flood)", author: "Kalki Krishnamurthy", category: "Tamil Books", language: "Tamil", publisher: "Vikatan", year: 1954, isbn: "978-818477001", pages: 480, rating: 4.9, reviewsCount: 340, originalPrice: 600, discountPrice: 450, discountPercent: 25, stock: 18, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "The epic masterpiece of Chola dynasty history, intrigue, romance, and bravery.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 2, title: "Velpari - Part 1 & 2", author: "Su. Venkatesan", category: "Tamil Books", language: "Tamil", publisher: "Ananda Vikatan", year: 2018, isbn: "978-819388002", pages: 720, rating: 4.9, reviewsCount: 290, originalPrice: 950, discountPrice: 799, discountPercent: 16, stock: 12, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "Unmatched tale of King Pari's valour, nature's warfare, and Sangam era history.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 3, title: "Sivagamiyin Sabatham", author: "Kalki Krishnamurthy", category: "Tamil Books", language: "Tamil", publisher: "Pustaka", year: 1948, isbn: "978-818477003", pages: 550, rating: 4.8, reviewsCount: 180, originalPrice: 550, discountPrice: 420, discountPercent: 24, stock: 15, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "Pallava kingdom art, passion, war, and Sivagami's solemn vow.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 4, title: "Parthiban Kanavu", author: "Kalki Krishnamurthy", category: "Tamil Books", language: "Tamil", publisher: "Vikatan", year: 1943, isbn: "978-818477004", pages: 310, rating: 4.7, reviewsCount: 150, originalPrice: 350, discountPrice: 280, discountPercent: 20, stock: 20, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "King Parthiban's dream for Chola freedom fulfilled by his courageous son.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 5, title: "Karrin Kural (Voice of Wind)", author: "Jayakanthan", category: "Tamil Books", language: "Tamil", publisher: "Kavitha", year: 1972, isbn: "978-818477005", pages: 240, rating: 4.6, reviewsCount: 95, originalPrice: 280, discountPrice: 220, discountPercent: 21, stock: 9, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "Deeply philosophical modern Tamil literature on human psychology and society.", isBestseller: false, isNewArrival: false, isTrending: false },
+
+      // Computer Science & Programming (6-14)
+      { id: 6, title: "Clean Code: A Handbook of Agile Software Craftsmanship", author: "Robert C. Martin", category: "Programming", language: "English", publisher: "Prentice Hall", year: 2008, isbn: "978-0132350884", pages: 464, rating: 4.9, reviewsCount: 520, originalPrice: 1800, discountPrice: 1399, discountPercent: 22, stock: 25, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "Even bad code can function. But if code isn't clean, it can bring a development organization to its knees.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 7, title: "Introduction to Algorithms (CLRS 4th Ed)", author: "Thomas H. Cormen", category: "Computer Science", language: "English", publisher: "MIT Press", year: 2022, isbn: "978-0262046305", pages: 1312, rating: 4.8, reviewsCount: 410, originalPrice: 2800, discountPrice: 2250, discountPercent: 20, stock: 14, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "The definitive comprehensive bible for data structures and algorithms analysis.", isBestseller: true, isNewArrival: true, isTrending: true },
+      { id: 8, title: "Design Patterns: Elements of Reusable Object-Oriented Software", author: "Erich Gamma et al.", category: "Programming", language: "English", publisher: "Addison-Wesley", year: 1994, isbn: "978-0201633610", pages: 395, rating: 4.7, reviewsCount: 310, originalPrice: 1650, discountPrice: 1290, discountPercent: 21, stock: 19, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "23 classic design patterns for modern object-oriented software architecture.", isBestseller: false, isNewArrival: false, isTrending: true },
+      { id: 9, title: "Eloquent JavaScript (3rd Edition)", author: "Marijn Haverbeke", category: "Web Development", language: "English", publisher: "No Starch Press", year: 2018, isbn: "978-1593279509", pages: 472, rating: 4.8, reviewsCount: 280, originalPrice: 1200, discountPrice: 899, discountPercent: 25, stock: 30, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "A deep dive into JavaScript programming, asynchronous JS, and browser DOM API.", isBestseller: false, isNewArrival: false, isTrending: true },
+      { id: 10, title: "Operating System Concepts (10th Ed)", author: "Abraham Silberschatz", category: "Computer Science", language: "English", publisher: "Wiley", year: 2018, isbn: "978-1119320913", pages: 1204, rating: 4.6, reviewsCount: 190, originalPrice: 2200, discountPrice: 1750, discountPercent: 20, stock: 10, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "Processes, threads, memory management, file systems, and kernel security.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 11, title: "You Don't Know JS Yet: Scope & Closures", author: "Kyle Simpson", category: "Web Development", language: "English", publisher: "Independently Published", year: 2020, isbn: "979-8604732007", pages: 280, rating: 4.9, reviewsCount: 220, originalPrice: 950, discountPrice: 720, discountPercent: 24, stock: 22, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "Uncompromising guide to JavaScript scope, lexical environment, and closures.", isBestseller: false, isNewArrival: true, isTrending: true },
+      { id: 12, title: "System Design Interview – An Insider's Guide", author: "Alex Xu", category: "Computer Science", language: "English", publisher: "ByteByteGo", year: 2020, isbn: "979-8664653403", pages: 320, rating: 4.9, reviewsCount: 650, originalPrice: 1900, discountPrice: 1499, discountPercent: 21, stock: 40, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "Step-by-step framework to master distributed systems design interviews.", isBestseller: true, isNewArrival: true, isTrending: true },
+      { id: 13, title: "The Pragmatic Programmer (20th Anniv Ed)", author: "David Thomas, Andrew Hunt", category: "Programming", language: "English", publisher: "Addison-Wesley", year: 2019, isbn: "978-0135957059", pages: 352, rating: 4.9, reviewsCount: 390, originalPrice: 1750, discountPrice: 1350, discountPercent: 22, stock: 16, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "From personal responsibility and career development to architectural adaptability.", isBestseller: true, isNewArrival: false, isTrending: false },
+      { id: 14, title: "Head First Design Patterns (2nd Ed)", author: "Eric Freeman, Elisabeth Robson", category: "Programming", language: "English", publisher: "O'Reilly Media", year: 2020, isbn: "978-1492078005", pages: 672, rating: 4.7, reviewsCount: 260, originalPrice: 1600, discountPrice: 1250, discountPercent: 21, stock: 11, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "Visually rich, brain-friendly guide to object-oriented software engineering.", isBestseller: false, isNewArrival: false, isTrending: false },
+
+      // AI & Data Science & Cyber Security (15-22)
+      { id: 15, title: "Deep Learning", author: "Ian Goodfellow, Yoshua Bengio", category: "Artificial Intelligence", language: "English", publisher: "MIT Press", year: 2016, isbn: "978-0262035613", pages: 800, rating: 4.8, reviewsCount: 340, originalPrice: 2600, discountPrice: 2100, discountPercent: 19, stock: 12, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "Mathematical foundations, neural networks, backprop, CNNs, and Transformers.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 16, title: "Hands-On Machine Learning with Scikit-Learn, Keras, & PyTorch", author: "Aurélien Géron", category: "Data Science", language: "English", publisher: "O'Reilly Media", year: 2022, isbn: "978-1098125974", pages: 856, rating: 4.9, reviewsCount: 480, originalPrice: 2400, discountPrice: 1899, discountPercent: 20, stock: 28, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "Practical ML & deep learning pipelines using Python ecosystem frameworks.", isBestseller: true, isNewArrival: true, isTrending: true },
+      { id: 17, title: "Python for Data Analysis (3rd Ed)", author: "Wes McKinney", category: "Data Science", language: "English", publisher: "O'Reilly Media", year: 2022, isbn: "978-1098104030", pages: 580, rating: 4.7, reviewsCount: 230, originalPrice: 1500, discountPrice: 1150, discountPercent: 23, stock: 17, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "Data wrangling with Pandas, NumPy, and Jupyter notebooks from pandas creator.", isBestseller: false, isNewArrival: false, isTrending: true },
+      { id: 18, title: "Artificial Intelligence: A Modern Approach (4th Ed)", author: "Stuart Russell, Peter Norvig", category: "Artificial Intelligence", language: "English", publisher: "Pearson", year: 2020, isbn: "978-0134610993", pages: 1166, rating: 4.8, reviewsCount: 310, originalPrice: 2900, discountPrice: 2399, discountPercent: 17, stock: 8, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "The standard global textbook for intelligent agents, search, probabilistic reasoning.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 19, title: "The Web Application Hacker's Handbook (2nd Ed)", author: "Dafydd Stuttard, Marcus Pinto", category: "Cyber Security", language: "English", publisher: "Wiley", year: 2011, isbn: "978-1118026472", pages: 912, rating: 4.9, reviewsCount: 270, originalPrice: 1950, discountPrice: 1499, discountPercent: 23, stock: 15, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "Discovering and exploiting security flaws in modern web applications.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 20, title: "Practical Malware Analysis", author: "Michael Sikorski, Andrew Honig", category: "Cyber Security", language: "English", publisher: "No Starch Press", year: 2012, isbn: "978-1593272906", pages: 712, rating: 4.8, reviewsCount: 180, originalPrice: 1800, discountPrice: 1399, discountPercent: 22, stock: 10, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "The hands-on guide to dissecting malicious binaries & reverse engineering.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 21, title: "Designing Data-Intensive Applications", author: "Martin Kleppmann", category: "Computer Science", language: "English", publisher: "O'Reilly Media", year: 2017, isbn: "978-1449373320", pages: 616, rating: 5.0, reviewsCount: 890, originalPrice: 1990, discountPrice: 1550, discountPercent: 22, stock: 35, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "The definitive guide to scalability, consistency, reliability, transactions & distributed databases.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 22, title: "Compilers: Principles, Techniques, & Tools (Dragon Book)", author: "Alfred Aho et al.", category: "Computer Science", language: "English", publisher: "Pearson", year: 2006, isbn: "978-0321486813", pages: 1040, rating: 4.6, reviewsCount: 140, originalPrice: 2400, discountPrice: 1890, discountPercent: 21, stock: 6, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "Lexical analysis, syntax trees, intermediate representation, and machine code optimization.", isBestseller: false, isNewArrival: false, isTrending: false },
+
+      // Business & Finance (23-30)
+      { id: 23, title: "Atomic Habits", author: "James Clear", category: "Self Development", language: "English", publisher: "Penguin Random House", year: 2018, isbn: "978-0735211292", pages: 320, rating: 4.9, reviewsCount: 1200, originalPrice: 799, discountPrice: 499, discountPercent: 37, stock: 50, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "An easy & proven way to build good habits & break bad ones with micro changes.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 24, title: "The Psychology of Money", author: "Morgan Housel", category: "Finance", language: "English", publisher: "Harriman House", year: 2020, isbn: "978-0857197689", pages: 252, rating: 4.8, reviewsCount: 950, originalPrice: 499, discountPrice: 349, discountPercent: 30, stock: 45, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "Timeless lessons on wealth, greed, and happiness in financial decision making.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 25, title: "The Intelligent Investor", author: "Benjamin Graham", category: "Finance", language: "English", publisher: "Harper Business", year: 2006, isbn: "978-0060555665", pages: 640, rating: 4.7, reviewsCount: 510, originalPrice: 899, discountPrice: 650, discountPercent: 27, stock: 20, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "The definitive book on value investing endorsed by Warren Buffett.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 26, title: "Rich Dad Poor Dad", author: "Robert T. Kiyosaki", category: "Finance", language: "English", publisher: "Plata Publishing", year: 2017, isbn: "978-1612680194", pages: 336, rating: 4.7, reviewsCount: 800, originalPrice: 499, discountPrice: 350, discountPercent: 29, stock: 38, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "What the rich teach their kids about money that the poor and middle class do not!", isBestseller: true, isNewArrival: false, isTrending: false },
+      { id: 27, title: "Zero to One: Notes on Startups", author: "Peter Thiel, Blake Masters", category: "Business", language: "English", publisher: "Crown Business", year: 2014, isbn: "978-0804139298", pages: 224, rating: 4.7, reviewsCount: 420, originalPrice: 599, discountPrice: 420, discountPercent: 30, stock: 22, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "How to build startups that create new things rather than copying existing models.", isBestseller: false, isNewArrival: false, isTrending: true },
+      { id: 28, title: "The Lean Startup", author: "Eric Ries", category: "Business", language: "English", publisher: "Currency", year: 2011, isbn: "978-0307887894", pages: 336, rating: 4.6, reviewsCount: 380, originalPrice: 699, discountPrice: 499, discountPercent: 28, stock: 18, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "Continuous innovation to create radically successful businesses.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 29, title: "The Personal MBA", author: "Josh Kaufman", category: "Business", language: "English", publisher: "Portfolio", year: 2010, isbn: "978-1591845577", pages: 464, rating: 4.7, reviewsCount: 290, originalPrice: 850, discountPrice: 620, discountPercent: 27, stock: 14, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "Master the art of business without drowning in student debt.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 30, title: "Thinking, Fast and Slow", author: "Daniel Kahneman", category: "Non-Fiction", language: "English", publisher: "Farrar, Straus and Giroux", year: 2011, isbn: "978-0374533557", pages: 512, rating: 4.6, reviewsCount: 460, originalPrice: 799, discountPrice: 550, discountPercent: 31, stock: 16, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "System 1 fast intuitive thinking vs System 2 slow deliberate cognitive processing.", isBestseller: false, isNewArrival: false, isTrending: false },
+
+      // Fiction & Classics (31-38)
+      { id: 31, title: "The Alchemist", author: "Paulo Coelho", category: "Fiction", language: "English", publisher: "HarperOne", year: 1988, isbn: "978-0062315007", pages: 208, rating: 4.7, reviewsCount: 1100, originalPrice: 499, discountPrice: 299, discountPercent: 40, stock: 40, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "An enchanting fable about following your personal legend and dreams.", isBestseller: true, isNewArrival: false, isTrending: false },
+      { id: 32, title: "1984", author: "George Orwell", category: "Fiction", language: "English", publisher: "Signet Classic", year: 1949, isbn: "978-0451524935", pages: 328, rating: 4.8, reviewsCount: 820, originalPrice: 399, discountPrice: 250, discountPercent: 37, stock: 30, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "Dystopian masterpiece warning of Big Brother, totalitarian surveillance, and censorship.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 33, title: "To Kill a Mockingbird", author: "Harper Lee", category: "Fiction", language: "English", publisher: "Harper Perennial", year: 1960, isbn: "978-0060935467", pages: 336, rating: 4.9, reviewsCount: 740, originalPrice: 450, discountPrice: 320, discountPercent: 28, stock: 25, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "Atticus Finch defends justice and human dignity in racial Alabama.", isBestseller: true, isNewArrival: false, isTrending: false },
+      { id: 34, title: "The Great Gatsby", author: "F. Scott Fitzgerald", category: "Fiction", language: "English", publisher: "Scribner", year: 1925, isbn: "978-0743273565", pages: 180, rating: 4.5, reviewsCount: 500, originalPrice: 350, discountPrice: 220, discountPercent: 37, stock: 22, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "The Jazz Age tragedy of Jay Gatsby's obsessive love for Daisy Buchanan.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 35, title: "Sapiens: A Brief History of Humankind", author: "Yuval Noah Harari", category: "History", language: "English", publisher: "Harper", year: 2015, isbn: "978-0062316097", pages: 464, rating: 4.8, reviewsCount: 910, originalPrice: 699, discountPrice: 499, discountPercent: 28, stock: 35, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "How Homo sapiens conquered Earth through cognitive, agricultural & scientific revolutions.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 36, title: "India After Gandhi", author: "Ramachandra Guha", category: "History", language: "English", publisher: "HarperCollins", year: 2007, isbn: "978-0330396103", pages: 900, rating: 4.8, reviewsCount: 320, originalPrice: 999, discountPrice: 750, discountPercent: 25, stock: 15, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "The magisterial history of the world's largest democracy post 1947.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 37, title: "Wings of Fire (Autobiography)", author: "APJ Abdul Kalam", category: "Biography", language: "English", publisher: "Universities Press", year: 1999, isbn: "978-8173711466", pages: 180, rating: 4.9, reviewsCount: 840, originalPrice: 350, discountPrice: 249, discountPercent: 28, stock: 45, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "Inspirational journey of India's Missile Man and beloved former President.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 38, title: "Steve Jobs", author: "Walter Isaacson", category: "Biography", language: "English", publisher: "Simon & Schuster", year: 2011, isbn: "978-1451648539", pages: 656, rating: 4.7, reviewsCount: 410, originalPrice: 899, discountPrice: 650, discountPercent: 27, stock: 18, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "The exclusive biography based on forty interviews with Apple co-founder Steve Jobs.", isBestseller: false, isNewArrival: false, isTrending: false },
+
+      // Science, Math & Children's (39-50)
+      { id: 39, title: "A Brief History of Time", author: "Stephen Hawking", category: "Science", language: "English", publisher: "Bantam Books", year: 1988, isbn: "978-0553380163", pages: 212, rating: 4.7, reviewsCount: 550, originalPrice: 499, discountPrice: 350, discountPercent: 29, stock: 24, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "From Big Bang to Black Holes in accessible physics explanations.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 40, title: "Astrophysics for People in a Hurry", author: "Neil deGrasse Tyson", category: "Science", language: "English", publisher: "W. W. Norton", year: 2017, isbn: "978-0393609394", pages: 224, rating: 4.6, reviewsCount: 380, originalPrice: 599, discountPrice: 420, discountPercent: 29, stock: 19, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "Quick, witty guide to cosmos, quantum mechanics, dark matter, and exoplanets.", isBestseller: false, isNewArrival: true, isTrending: true },
+      { id: 41, title: "The Art of Problem Solving (Vol 1)", author: "Richard Rusczyk", category: "Mathematics", language: "English", publisher: "AoPS Inc", year: 2006, isbn: "978-0977304561", pages: 340, rating: 4.9, reviewsCount: 160, originalPrice: 1200, discountPrice: 950, discountPercent: 20, stock: 14, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "The classic text for math olympiad competition preparation and discrete math.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 42, title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling", category: "Children’s Books", language: "English", publisher: "Scholastic", year: 1997, isbn: "978-0590353427", pages: 309, rating: 4.9, reviewsCount: 1500, originalPrice: 599, discountPrice: 399, discountPercent: 33, stock: 45, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "The magical journey of young Harry Potter entering Hogwarts School of Witchcraft.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 43, title: "The Little Prince", author: "Antoine de Saint-Exupéry", category: "Children’s Books", language: "English", publisher: "Harcourt", year: 1943, isbn: "978-0156012195", pages: 96, rating: 4.8, reviewsCount: 620, originalPrice: 350, discountPrice: 240, discountPercent: 31, stock: 30, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "A poetic tale of a young prince visiting asteroids in space.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 44, title: "Can't Hurt Me: Master Your Mind", author: "David Goggins", category: "Self Development", language: "English", publisher: "Lioncrest", year: 2018, isbn: "978-1544512280", pages: 364, rating: 4.9, reviewsCount: 880, originalPrice: 899, discountPrice: 620, discountPercent: 31, stock: 32, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "Navy SEAL's rule of 40% to push past pain, fear and reach maximum human potential.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 45, title: "Guns, Germs, and Steel", author: "Jared Diamond", category: "History", language: "English", publisher: "W. W. Norton", year: 1997, isbn: "978-0393317558", pages: 528, rating: 4.6, reviewsCount: 390, originalPrice: 750, discountPrice: 520, discountPercent: 30, stock: 15, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "Fates of human societies shaped by environmental geography and domestication.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 46, title: "Deep Work: Rules for Focused Success", author: "Cal Newport", category: "Self Development", language: "English", publisher: "Grand Central", year: 2016, isbn: "978-1455586691", pages: 304, rating: 4.8, reviewsCount: 670, originalPrice: 699, discountPrice: 480, discountPercent: 31, stock: 26, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400&auto=format&fit=crop", description: "Mastering distraction-free concentration in a noisy modern digital world.", isBestseller: true, isNewArrival: false, isTrending: true },
+      { id: 47, title: "The 7 Habits of Highly Effective People", author: "Stephen R. Covey", category: "Self Development", language: "English", publisher: "Free Press", year: 1989, isbn: "978-0743269513", pages: 384, rating: 4.7, reviewsCount: 780, originalPrice: 650, discountPrice: 450, discountPercent: 30, stock: 20, cover: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400&auto=format&fit=crop", description: "Principle-centered approach for solving personal and professional problems.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 48, title: "Man's Search for Meaning", author: "Viktor E. Frankl", category: "Non-Fiction", language: "English", publisher: "Beacon Press", year: 1946, isbn: "978-0807014295", pages: 165, rating: 4.9, reviewsCount: 820, originalPrice: 399, discountPrice: 280, discountPercent: 29, stock: 25, cover: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400&auto=format&fit=crop", description: "Psychiatrist's memoir of Auschwitz concentration camp survival and logotherapy.", isBestseller: true, isNewArrival: false, isTrending: false },
+      { id: 49, title: "Algorithms to Live By", author: "Brian Christian, Tom Griffiths", category: "Computer Science", language: "English", publisher: "Henry Holt", year: 2016, isbn: "978-1627790369", pages: 368, rating: 4.7, reviewsCount: 310, originalPrice: 799, discountPrice: 580, discountPercent: 27, stock: 18, cover: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400&auto=format&fit=crop", description: "The computer science of human decisions: optimal stopping, sorting, caching, and game theory.", isBestseller: false, isNewArrival: false, isTrending: false },
+      { id: 50, title: "Thirukkural with English Translation", author: "Thiruvalluvar", category: "Tamil Books", language: "Tamil", publisher: "Giri Trading", year: 1995, isbn: "978-818477050", pages: 320, rating: 5.0, reviewsCount: 990, originalPrice: 300, discountPrice: 220, discountPercent: 26, stock: 50, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400&auto=format&fit=crop", description: "1330 immortal couplets on ethics, political wisdom, virtue, and love.", isBestseller: true, isNewArrival: false, isTrending: true }
+    ];
+
+    /* FAQ DATA */
+    const FAQ_DATA = [
+      { q: "How can I order a book on BOOKHUB?", a: "Simply browse our catalogue, select your desired book, click 'Add to Cart', and click 'Proceed to Checkout'. Follow the 4-step wizard to complete your demo order." },
+      { q: "How can I cancel or modify my order?", a: "You can view all active orders in 'My Orders' section. Click 'Cancel Order' on any pending order to cancel immediately." },
+      { q: "How can I track my order timeline?", a: "Each order generates a unique Order ID (e.g., BK20260824001). Click 'Track Order' to see real-time progress through Order Placed -> Confirmed -> Packed -> Shipped -> Delivered." },
+      { q: "What payment methods are available?", a: "We support Cash on Delivery (COD), Demo UPI (GPay/PhonePe QR code simulation), and Credit/Debit card demo sandbox." },
+      { q: "How long does delivery take?", a: "Express shipping takes 24 hours within Tamil Nadu and 2-3 business days across India." }
+    ];
+
+    /* --------------------------------------------------------------------------
+       2. LOCALSTORAGE STATE MANAGEMENT
+       -------------------------------------------------------------------------- */
+    let appState = {
+      books: [],
+      cart: [],
+      wishlist: [],
+      orders: [],
+      recentlyViewed: [],
+      compare: [],
+      coupons: { "BOOK10": 10, "WELCOME20": 20, "READ15": 15 },
+      activeCoupon: null,
+      theme: 'dark',
+      reviews: {}
+    };
+
+    function initStorage() {
+      // Books
+      const localBooks = localStorage.getItem('bookhub_books');
+      if (!localBooks) {
+        localStorage.setItem('bookhub_books', JSON.stringify(SAMPLE_BOOKS));
+        appState.books = SAMPLE_BOOKS;
+      } else {
+        appState.books = JSON.parse(localBooks);
+      }
+
+      // Cart
+      appState.cart = JSON.parse(localStorage.getItem('bookhub_cart') || '[]');
+
+      // Wishlist
+      appState.wishlist = JSON.parse(localStorage.getItem('bookhub_wishlist') || '[]');
+
+      // Orders
+      const localOrders = localStorage.getItem('bookhub_orders');
+      if (!localOrders) {
+        const sampleOrder = {
+          id: "BK20260824001",
+          date: "2026-08-24",
+          items: [{ bookId: 1, title: "Ponniyin Selvan - Part 1", price: 450, qty: 1 }],
+          total: 450,
+          payment: "Cash on Delivery",
+          status: "Out for Delivery",
+          stepIndex: 4
+        };
+        localStorage.setItem('bookhub_orders', JSON.stringify([sampleOrder]));
+        appState.orders = [sampleOrder];
+      } else {
+        appState.orders = JSON.parse(localOrders);
+      }
+
+      // Recently Viewed
+      appState.recentlyViewed = JSON.parse(localStorage.getItem('bookhub_recently_viewed') || '[]');
+
+      // Theme
+      appState.theme = localStorage.getItem('bookhub_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', appState.theme);
+      updateThemeIcon();
+
+      updateBadges();
+    }
+
+    function saveState(key, data) {
+      localStorage.setItem(`bookhub_${key}`, JSON.stringify(data));
+      updateBadges();
+    }
+
+    function updateBadges() {
+      const cartCount = appState.cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-badge').textContent = cartCount;
+      document.getElementById('wishlist-badge').textContent = appState.wishlist.length;
+    }
+
+    /* --------------------------------------------------------------------------
+       3. SPA ROUTING & NAVIGATION
+       -------------------------------------------------------------------------- */
+    let currentView = 'home';
+
+    function navigateTo(viewId, params = null) {
+      currentView = viewId;
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+
+      const targetSec = document.getElementById(`view-${viewId}`);
+      if (targetSec) {
+        targetSec.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Update Nav active link
+      document.querySelectorAll('.nav-links a, .mobile-nav-item').forEach(el => el.classList.remove('active'));
+      const activeNav = document.getElementById(`nav-${viewId}`);
+      if (activeNav) activeNav.classList.add('active');
+
+      // View Render triggers
+      if (viewId === 'home') renderHome();
+      else if (viewId === 'catalogue') renderCatalogue();
+      else if (viewId === 'details' && params) renderDetails(params);
+      else if (viewId === 'categories') renderCategoriesView();
+      else if (viewId === 'offers') renderOffersView();
+      else if (viewId === 'wishlist') renderWishlistView();
+      else if (viewId === 'cart') renderCartView();
+      else if (viewId === 'checkout') renderCheckoutView();
+      else if (viewId === 'my-orders') renderMyOrdersView();
+      else if (viewId === 'track-order') renderTrackOrderView(params);
+      else if (viewId === 'profile') renderProfileView();
+      else if (viewId === 'admin') renderAdminView();
+      else if (viewId === 'faq') renderFAQView();
+    }
+
+    /* --------------------------------------------------------------------------
+       4. COMPONENT RENDERERS
+       -------------------------------------------------------------------------- */
+
+    // Helper to generate book card HTML
+    function createBookCardHTML(book) {
+      const inWishlist = appState.wishlist.includes(book.id);
+      const inCompare = appState.compare.includes(book.id);
+
+      return `
+        <div class="book-card">
+          <div class="book-cover-container">
+            <img src="${book.cover}" class="book-cover" alt="${book.title}">
+            <div class="book-card-badges">
+              ${book.isBestseller ? `<span class="tag-badge tag-bestseller">Bestseller</span>` : ''}
+              ${book.isNewArrival ? `<span class="tag-badge tag-new">New</span>` : ''}
+              <span class="tag-badge tag-discount">${book.discountPercent}% OFF</span>
+            </div>
+            <div class="book-actions-overlay">
+              <button class="icon-btn" style="width:34px;height:34px;font-size:0.9rem;" onclick="toggleWishlist(event, ${book.id})" title="Wishlist">
+                <i class="${inWishlist ? 'fa-solid' : 'fa-regular'} fa-heart" style="${inWishlist ? 'color:#ef4444' : ''}"></i>
+              </button>
+              <button class="icon-btn" style="width:34px;height:34px;font-size:0.9rem;" onclick="openQuickView(${book.id})" title="Quick View">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+              <button class="icon-btn" style="width:34px;height:34px;font-size:0.9rem;" onclick="toggleCompare(${book.id})" title="Compare">
+                <i class="fa-solid fa-code-compare" style="${inCompare ? 'color:var(--gold)' : ''}"></i>
+              </button>
+            </div>
+          </div>
+          <div class="book-info">
+            <div>
+              <div class="book-category">${book.category}</div>
+              <h3 class="book-title" onclick="navigateTo('details', ${book.id})" style="cursor:pointer;">${book.title}</h3>
+              <div class="book-author">by ${book.author}</div>
+              <div class="book-rating">
+                <i class="fa-solid fa-star"></i> <strong>${book.rating}</strong> <span>(${book.reviewsCount})</span>
+              </div>
+            </div>
+            <div>
+              <div class="book-price-box">
+                <span class="price-discount">₹${book.discountPrice}</span>
+                <span class="price-original">₹${book.originalPrice}</span>
+              </div>
+              <button class="btn-add-cart" onclick="addToCart(event, ${book.id})">
+                <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render Home View
+    function renderHome() {
+      const bestSellers = appState.books.filter(b => b.isBestseller);
+      const techBooks = appState.books.filter(b => b.category === "Computer Science" || b.category === "Programming" || b.category === "Artificial Intelligence");
+      const tamilBooks = appState.books.filter(b => b.category === "Tamil Books");
+
+      document.getElementById('home-bestsellers-slider').innerHTML = bestSellers.map(createBookCardHTML).join('');
+      document.getElementById('home-tech-slider').innerHTML = techBooks.map(createBookCardHTML).join('');
+      document.getElementById('home-tamil-slider').innerHTML = tamilBooks.map(createBookCardHTML).join('');
+
+      // Recently viewed
+      if (appState.recentlyViewed.length > 0) {
+        document.getElementById('recently-viewed-container').style.display = 'block';
+        const rvBooks = appState.books.filter(b => appState.recentlyViewed.includes(b.id));
+        document.getElementById('home-recently-viewed-slider').innerHTML = rvBooks.map(createBookCardHTML).join('');
+      }
+    }
+
+    // Render Catalogue & Filters
+    function renderCatalogue() {
+      // Render Category Filter Checkboxes
+      const categories = [...new Set(SAMPLE_BOOKS.map(b => b.category))];
+      const catHTML = categories.map(cat => `
+        <label class="filter-option">
+          <input type="checkbox" value="${cat}" class="filter-cat-cb" onchange="applyFilters()"> ${cat}
+        </label>
+      `).join('');
+      document.getElementById('filter-categories-list').innerHTML = catHTML;
+
+      applyFilters();
+    }
+
+    function updatePriceLabel(val) {
+      document.getElementById('price-slider-val').textContent = `Up to ₹${val}`;
+      applyFilters();
+    }
+
+    function applyFilters() {
+      if (currentView !== 'catalogue') return;
+
+      let filtered = [...appState.books];
+
+      // Categories
+      const selectedCats = Array.from(document.querySelectorAll('.filter-cat-cb:checked')).map(cb => cb.value);
+      if (selectedCats.length > 0) {
+        filtered = filtered.filter(b => selectedCats.includes(b.category));
+      }
+
+      // Max Price
+      const maxPrice = parseInt(document.getElementById('filter-price-slider').value);
+      filtered = filtered.filter(b => b.discountPrice <= maxPrice);
+
+      // Min Rating
+      const minRating = parseFloat(document.querySelector('input[name="filter-rating"]:checked').value);
+      if (minRating > 0) {
+        filtered = filtered.filter(b => b.rating >= minRating);
+      }
+
+      // Languages
+      const selectedLangs = Array.from(document.querySelectorAll('.filter-lang-cb:checked')).map(cb => cb.value);
+      if (selectedLangs.length > 0) {
+        filtered = filtered.filter(b => selectedLangs.includes(b.language));
+      }
+
+      // Sort
+      const sortVal = document.getElementById('sort-select').value;
+      if (sortVal === 'price-low') filtered.sort((a, b) => a.discountPrice - b.discountPrice);
+      else if (sortVal === 'price-high') filtered.sort((a, b) => b.discountPrice - a.discountPrice);
+      else if (sortVal === 'rating') filtered.sort((a, b) => b.rating - a.rating);
+      else if (sortVal === 'discount') filtered.sort((a, b) => b.discountPercent - a.discountPercent);
+      else if (sortVal === 'newest') filtered.sort((a, b) => b.year - a.year);
+
+      document.getElementById('catalogue-count-label').textContent = `Showing ${filtered.length} books`;
+      const grid = document.getElementById('catalogue-books-grid');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align:center; padding: 4rem 1rem;">
+            <i class="fa-solid fa-face-frown" style="font-size:3rem; color:var(--text-muted); margin-bottom:1rem;"></i>
+            <h3>No Books Match Your Selected Filters</h3>
+            <p style="color:var(--text-secondary);">Try clearing filters or adjusting price range slider.</p>
+          </div>
+        `;
+      } else {
+        grid.innerHTML = filtered.map(createBookCardHTML).join('');
+      }
+    }
+
+    function resetFilters() {
+      document.querySelectorAll('.filter-cat-cb, .filter-lang-cb').forEach(cb => cb.checked = false);
+      document.getElementById('filter-price-slider').value = 2500;
+      document.getElementById('price-slider-val').textContent = 'Up to ₹2500';
+      document.querySelector('input[name="filter-rating"][value="0"]').checked = true;
+      document.getElementById('sort-select').value = 'popular';
+      applyFilters();
+      showToast("All catalogue filters cleared", "info");
+    }
+
+    function filterByCategory(catName) {
+      navigateTo('catalogue');
+      setTimeout(() => {
+        document.querySelectorAll('.filter-cat-cb').forEach(cb => {
+          cb.checked = (cb.value === catName);
+        });
+        applyFilters();
+      }, 100);
+    }
+
+    function filterByPreset(type) {
+      navigateTo('catalogue');
+      setTimeout(() => {
+        if (type === 'bestsellers') {
+          document.getElementById('sort-select').value = 'rating';
+        }
+        applyFilters();
+      }, 100);
+    }
+
+    // Render Details View
+    function renderDetails(bookId) {
+      const book = appState.books.find(b => b.id === bookId);
+      if (!book) return;
+
+      // Track recently viewed
+      if (!appState.recentlyViewed.includes(bookId)) {
+        appState.recentlyViewed.unshift(bookId);
+        if (appState.recentlyViewed.length > 8) appState.recentlyViewed.pop();
+        saveState('recently_viewed', appState.recentlyViewed);
+      }
+
+      const inWishlist = appState.wishlist.includes(book.id);
+
+      const html = `
+        <div class="details-gallery">
+          <div class="main-cover-frame">
+            <img src="${book.cover}" alt="${book.title}">
+          </div>
+        </div>
+
+        <div>
+          <span class="hero-subtitle-badge" style="margin-bottom:0.5rem;">${book.category}</span>
+          <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem;">${book.title}</h1>
+          <div style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1rem;">by <strong style="color: var(--gold);">${book.author}</strong></div>
+
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <div style="color: var(--gold); font-size: 1.1rem;">
+              <i class="fa-solid fa-star"></i> <strong>${book.rating}</strong> / 5.0
+            </div>
+            <span style="color: var(--text-muted);">|</span>
+            <span style="color: var(--text-secondary); font-size: 0.9rem;">${book.reviewsCount} Reader Reviews</span>
+            <span style="color: var(--text-muted);">|</span>
+            <span style="color: ${book.stock > 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:600; font-size: 0.9rem;">
+              ${book.stock > 0 ? `In Stock (${book.stock} left)` : 'Out of Stock'}
+            </span>
+          </div>
+
+          <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.5rem; background: var(--bg-card); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <span style="font-size: 2rem; font-weight: 800; color: var(--gold);">₹${book.discountPrice}</span>
+            <span style="text-decoration: line-through; color: var(--text-muted); font-size: 1.1rem;">₹${book.originalPrice}</span>
+            <span class="badge" style="font-size: 0.85rem;">Save ${book.discountPercent}%</span>
+          </div>
+
+          <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">${book.description}</p>
+
+          <table class="details-specs-table">
+            <tr><td>Publisher</td><td>${book.publisher} (${book.year})</td></tr>
+            <tr><td>Language</td><td>${book.language}</td></tr>
+            <tr><td>ISBN-13</td><td>${book.isbn}</td></tr>
+            <tr><td>Print Length</td><td>${book.pages} pages</td></tr>
+          </table>
+
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div class="qty-picker">
+              <button onclick="changeQtyInput(-1)">-</button>
+              <span id="dtl-qty-val">1</span>
+              <button onclick="changeQtyInput(1)">+</button>
+            </div>
+            <button class="btn-gold" onclick="addCurrentDetailsToCart(${book.id})"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+            <button class="btn-outline-gold" onclick="toggleWishlist(event, ${book.id})">
+              <i class="${inWishlist ? 'fa-solid' : 'fa-regular'} fa-heart"></i> ${inWishlist ? 'Wishlisted' : 'Wishlist'}
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('details-container').innerHTML = html;
+
+      // Recommendations
+      const recommended = appState.books.filter(b => b.category === book.category && b.id !== book.id);
+      document.getElementById('details-recommendations-slider').innerHTML = recommended.map(createBookCardHTML).join('');
+
+      renderBookReviews(bookId);
+    }
+
+    let detailsQty = 1;
+    function changeQtyInput(delta) {
+      detailsQty = Math.max(1, detailsQty + delta);
+      document.getElementById('dtl-qty-val').textContent = detailsQty;
+    }
+    function addCurrentDetailsToCart(bookId) {
+      addToCart(null, bookId, detailsQty);
+      detailsQty = 1;
+    }
+
+    function renderBookReviews(bookId) {
+      const defaultReviews = [
+        { name: "Arun Prakash", rating: 5, date: "2026-08-10", text: "Exceptional quality! The binding, font clarity and contents are top notch." },
+        { name: "Priya Sundaram", rating: 4, date: "2026-08-04", text: "Fast delivery within 24 hours in Tamil Nadu. Book arrived in perfect condition." }
+      ];
+      const customReviews = appState.reviews[bookId] || [];
+      const allRev = [...customReviews, ...defaultReviews];
+
+      document.getElementById('review-stat-count').textContent = `Based on ${allRev.length} reviews`;
+      const html = allRev.map(r => `
+        <div class="review-card">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem;">
+            <strong>${r.name}</strong>
+            <span style="font-size:0.75rem; color:var(--text-muted);">${r.date}</span>
+          </div>
+          <div style="color: var(--gold); font-size: 0.8rem; margin-bottom: 0.4rem;">
+            ${'<i class="fa-solid fa-star"></i>'.repeat(r.rating)}
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-secondary);">${r.text}</p>
+        </div>
+      `).join('');
+      document.getElementById('reviews-list-container').innerHTML = html;
+    }
+
+    function submitReview(e) {
+      e.preventDefault();
+      const name = document.getElementById('review-name').value;
+      const rating = parseInt(document.getElementById('review-rating').value);
+      const text = document.getElementById('review-text').value;
+
+      // Extract book ID from current view
+      const activeBook = appState.recentlyViewed[0] || 1;
+      if (!appState.reviews[activeBook]) appState.reviews[activeBook] = [];
+
+      appState.reviews[activeBook].unshift({
+        name, rating, text, date: new Date().toISOString().split('T')[0]
+      });
+
+      saveState('reviews', appState.reviews);
+      showToast("Thank you! Review submitted successfully", "success");
+      renderBookReviews(activeBook);
+      e.target.reset();
+    }
+
+    // Render Categories Page
+    function renderCategoriesView() {
+      const categories = [...new Set(SAMPLE_BOOKS.map(b => b.category))];
+      const grid = document.getElementById('categories-grid');
+
+      grid.innerHTML = categories.map(cat => {
+        const count = SAMPLE_BOOKS.filter(b => b.category === cat).length;
+        return `
+          <div class="glass-panel" style="padding: 1.5rem; text-align: center; cursor: pointer;" onclick="filterByCategory('${cat}')">
+            <div style="font-size: 2.2rem; color: var(--gold); margin-bottom: 0.75rem;"><i class="fa-solid fa-book-open"></i></div>
+            <h3 class="brand-font" style="font-size: 1.1rem; color: var(--text-primary); margin-bottom: 0.3rem;">${cat}</h3>
+            <small style="color: var(--text-muted);">${count} Available Books</small>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render Offers View
+    function renderOffersView() {
+      const discounted = appState.books.filter(b => b.discountPercent >= 25);
+      document.getElementById('offers-books-grid').innerHTML = discounted.map(createBookCardHTML).join('');
+    }
+
+    // Render Wishlist
+    function renderWishlistView() {
+      const grid = document.getElementById('wishlist-books-grid');
+      if (appState.wishlist.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding: 4rem 1rem;">
+            <i class="fa-regular fa-heart" style="font-size:3.5rem; color:var(--text-muted); margin-bottom:1rem;"></i>
+            <h3>Your Wishlist is Empty</h3>
+            <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Explore books and click the heart icon to save items.</p>
+            <button class="btn-gold" onclick="navigateTo('catalogue')">Explore Books</button>
+          </div>
+        `;
+        return;
+      }
+      const books = appState.books.filter(b => appState.wishlist.includes(b.id));
+      grid.innerHTML = books.map(createBookCardHTML).join('');
+    }
+
+    // Render Cart
+    function renderCartView() {
+      const tbody = document.getElementById('cart-table-body');
+      if (appState.cart.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align:center; padding: 3rem;">
+              <i class="fa-solid fa-cart-shopping" style="font-size:3rem; color:var(--text-muted); margin-bottom:1rem;"></i>
+              <h3>Your Shopping Cart is Empty</h3>
+              <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Looks like you haven't added any books yet.</p>
+              <button class="btn-gold" onclick="navigateTo('catalogue')">Shop Now</button>
+            </td>
+          </tr>
+        `;
+        updateCartTotals();
+        return;
+      }
+
+      tbody.innerHTML = appState.cart.map(item => {
+        const book = appState.books.find(b => b.id === item.bookId);
+        return `
+          <tr>
+            <td>
+              <div style="display:flex; align-items:center; gap: 1rem;">
+                <img src="${book.cover}" style="width: 45px; height: 60px; object-fit: cover; border-radius: 4px;">
+                <div>
+                  <strong style="color:var(--text-primary); font-size:0.95rem;">${book.title}</strong><br>
+                  <small style="color:var(--text-muted);">${book.author}</small>
+                </div>
+              </div>
+            </td>
+            <td style="font-weight:700;">₹${book.discountPrice}</td>
+            <td>
+              <div class="qty-picker">
+                <button onclick="updateCartQty(${book.id}, -1)">-</button>
+                <span>${item.qty}</span>
+                <button onclick="updateCartQty(${book.id}, 1)">+</button>
+              </div>
+            </td>
+            <td style="font-weight:800; color:var(--gold);">₹${book.discountPrice * item.qty}</td>
+            <td>
+              <button style="color:var(--danger);" onclick="removeFromCart(${book.id})"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      updateCartTotals();
+    }
+
+    function updateCartTotals() {
+      const subtotal = appState.cart.reduce((sum, item) => {
+        const book = appState.books.find(b => b.id === item.bookId);
+        return sum + (book ? book.discountPrice * item.qty : 0);
+      }, 0);
+
+      let discount = 0;
+      if (appState.activeCoupon) {
+        const pct = appState.coupons[appState.activeCoupon] || 0;
+        discount = Math.round((subtotal * pct) / 100);
+      }
+
+      const total = Math.max(0, subtotal - discount);
+
+      document.getElementById('cart-summary-subtotal').textContent = `₹${subtotal}`;
+      document.getElementById('cart-summary-discount').textContent = `-₹${discount}`;
+      document.getElementById('cart-summary-total').textContent = `₹${total}`;
+    }
+
+    function applyCouponCode() {
+      const code = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+      if (appState.coupons[code]) {
+        appState.activeCoupon = code;
+        showToast(`Coupon '${code}' applied! Saved ${appState.coupons[code]}% OFF`, "success");
+        updateCartTotals();
+      } else {
+        showToast("Invalid coupon code. Try BOOK10 or WELCOME20", "warning");
+      }
+    }
+
+    // Multi-step Checkout
+    let currentCheckoutStep = 1;
+    function renderCheckoutView() {
+      if (appState.cart.length === 0) {
+        showToast("Your cart is empty. Add books before checking out.", "warning");
+        navigateTo('cart');
+        return;
+      }
+      nextCheckoutStep(1);
+    }
+
+    function nextCheckoutStep(stepNum) {
+      currentCheckoutStep = stepNum;
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`checkout-step-${i}`).style.display = (i === stepNum) ? 'block' : 'none';
+        const node = document.getElementById(`step-node-${i}`);
+        if (i <= stepNum) node.classList.add('active');
+        else node.classList.remove('active');
+      }
+
+      if (stepNum === 3) {
+        // Summary
+        const subtotal = appState.cart.reduce((sum, item) => {
+          const book = appState.books.find(b => b.id === item.bookId);
+          return sum + (book.discountPrice * item.qty);
+        }, 0);
+
+        let discount = 0;
+        if (appState.activeCoupon) {
+          discount = Math.round((subtotal * (appState.coupons[appState.activeCoupon] || 0)) / 100);
+        }
+        const total = subtotal - discount;
+
+        document.getElementById('checkout-items-summary').innerHTML = `
+          <div style="margin-bottom:1rem; color:var(--text-secondary);">Items: ${appState.cart.length} books</div>
+          <div style="font-size:1.2rem; font-weight:800; color:var(--gold);">Total Payable: ₹${total}</div>
+        `;
+      }
+    }
+
+    function placeOrderNow() {
+      const name = document.getElementById('chk-name').value;
+      const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+      const subtotal = appState.cart.reduce((sum, item) => {
+        const book = appState.books.find(b => b.id === item.bookId);
+        return sum + (book.discountPrice * item.qty);
+      }, 0);
+
+      const orderId = "BK" + new Date().getFullYear() + String(new Date().getMonth() + 1).padStart(2, '0') + String(Math.floor(Math.random() * 900) + 100);
+
+      const newOrder = {
+        id: orderId,
+        date: new Date().toISOString().split('T')[0],
+        items: appState.cart.map(i => {
+          const b = appState.books.find(x => x.id === i.bookId);
+          return { title: b.title, price: b.discountPrice, qty: i.qty };
+        }),
+        total: subtotal,
+        payment: paymentMethod,
+        status: "Confirmed",
+        stepIndex: 2
+      };
+
+      appState.orders.unshift(newOrder);
+      saveState('orders', appState.orders);
+
+      // Clear Cart
+      appState.cart = [];
+      saveState('cart', appState.cart);
+
+      // Show confirmation
+      renderOrderSuccessView(newOrder);
+    }
+
+    function renderOrderSuccessView(order) {
+      document.getElementById('order-success-details-box').innerHTML = `
+        <div style="margin-bottom:0.5rem;"><strong>Order ID:</strong> <span style="color:var(--gold);">${order.id}</span></div>
+        <div style="margin-bottom:0.5rem;"><strong>Date:</strong> ${order.date}</div>
+        <div style="margin-bottom:0.5rem;"><strong>Payment Method:</strong> ${order.payment}</div>
+        <div style="margin-bottom:0.5rem;"><strong>Total Paid:</strong> ₹${order.total}</div>
+      `;
+      document.getElementById('btn-track-success-order').onclick = () => navigateTo('track-order', order.id);
+      navigateTo('order-success');
+    }
+
+    function renderTrackOrderView(orderId) {
+      const order = appState.orders.find(o => o.id === orderId) || appState.orders[0];
+      document.getElementById('track-order-id-label').textContent = `Tracking Order #${order.id}`;
+
+      const steps = [
+        { label: "Order Placed", icon: "fa-receipt" },
+        { label: "Order Confirmed", icon: "fa-check-circle" },
+        { label: "Packed", icon: "fa-box" },
+        { label: "Shipped", icon: "fa-truck-fast" },
+        { label: "Out for Delivery", icon: "fa-truck-ramp-box" },
+        { label: "Delivered", icon: "fa-house-circle-check" }
+      ];
+
+      const html = steps.map((s, idx) => `
+        <div class="timeline-node ${idx <= (order.stepIndex || 1) ? 'completed' : ''}">
+          <div class="node-icon"><i class="fa-solid ${s.icon}"></i></div>
+          <small style="font-size:0.8rem; font-weight:600;">${s.label}</small>
+        </div>
+      `).join('');
+
+      document.getElementById('tracking-timeline-box').innerHTML = html;
+    }
+
+    function renderMyOrdersView() {
+      const container = document.getElementById('my-orders-list');
+      if (appState.orders.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted);">No orders found.</p>`;
+        return;
+      }
+
+      container.innerHTML = appState.orders.map(o => `
+        <div class="glass-panel" style="padding:1.5rem; margin-bottom:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <div>
+              <strong style="color:var(--gold); font-size:1.1rem;">Order #${o.id}</strong>
+              <span style="color:var(--text-muted); font-size:0.85rem; margin-left:0.5rem;">${o.date}</span>
+            </div>
+            <span class="badge">${o.status}</span>
+          </div>
+          <div style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1rem;">
+            Items: ${o.items.map(i => `${i.title} (x${i.qty})`).join(', ')}
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:1.1rem; color:var(--gold);">₹${o.total}</span>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="btn-gold" style="padding:0.4rem 0.8rem; font-size:0.8rem;" onclick="navigateTo('track-order', '${o.id}')"><i class="fa-solid fa-truck"></i> Track</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderProfileView() {
+      const user = JSON.parse(localStorage.getItem('bookhub_user') || '{"name":"Sanjay Kumar","email":"sanjay@example.com"}');
+      document.getElementById('profile-display-name').textContent = user.name;
+      document.getElementById('profile-display-email').textContent = user.email;
+    }
+
+    function saveProfileDetails(e) {
+      e.preventDefault();
+      const name = document.getElementById('prof-name').value;
+      const email = document.getElementById('prof-email').value;
+      localStorage.setItem('bookhub_user', JSON.stringify({ name, email }));
+      showToast("Profile details updated!", "success");
+      renderProfileView();
+    }
+
+    // Admin Dashboard View
+    function renderAdminView() {
+      document.getElementById('adm-kpi-books').textContent = appState.books.length;
+      document.getElementById('adm-kpi-orders').textContent = appState.orders.length;
+
+      const tbody = document.getElementById('admin-orders-table-body');
+      tbody.innerHTML = appState.orders.map(o => `
+        <tr>
+          <td><strong style="color:var(--gold);">${o.id}</strong></td>
+          <td>Sanjay Kumar</td>
+          <td>₹${o.total}</td>
+          <td>${o.payment}</td>
+          <td><span class="badge">${o.status}</span></td>
+          <td>
+            <select onchange="updateOrderStatus('${o.id}', this.value)" style="padding:0.3rem 0.5rem; font-size:0.8rem;">
+              <option value="Confirmed" ${o.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+              <option value="Packed" ${o.status === 'Packed' ? 'selected' : ''}>Packed</option>
+              <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+              <option value="Out for Delivery" ${o.status === 'Out for Delivery' ? 'selected' : ''}>Out for Delivery</option>
+              <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+            </select>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const order = appState.orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = newStatus;
+        if (newStatus === 'Confirmed') order.stepIndex = 1;
+        else if (newStatus === 'Packed') order.stepIndex = 2;
+        else if (newStatus === 'Shipped') order.stepIndex = 3;
+        else if (newStatus === 'Out for Delivery') order.stepIndex = 4;
+        else if (newStatus === 'Delivered') order.stepIndex = 5;
+        saveState('orders', appState.orders);
+        showToast(`Order status updated to ${newStatus}`, "success");
+      }
+    }
+
+    function renderFAQView() {
+      const container = document.getElementById('faq-accordion-container');
+      container.innerHTML = FAQ_DATA.map((faq, idx) => `
+        <div class="glass-panel" style="padding: 1.25rem; cursor: pointer;" onclick="toggleFAQ(${idx})">
+          <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--gold);">
+            <span>${faq.q}</span>
+            <i class="fa-solid fa-chevron-down" id="faq-icon-${idx}"></i>
+          </div>
+          <p id="faq-ans-${idx}" style="display:none; color:var(--text-secondary); margin-top:0.75rem; font-size:0.9rem; line-height:1.5;">${faq.a}</p>
+        </div>
+      `).join('');
+    }
+
+    function toggleFAQ(idx) {
+      const ans = document.getElementById(`faq-ans-${idx}`);
+      const icon = document.getElementById(`faq-icon-${idx}`);
+      if (ans.style.display === 'none') {
+        ans.style.display = 'block';
+        icon.className = 'fa-solid fa-chevron-up';
+      } else {
+        ans.style.display = 'none';
+        icon.className = 'fa-solid fa-chevron-down';
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       5. E-COMMERCE CART & WISHLIST HANDLERS
+       -------------------------------------------------------------------------- */
+    function addToCart(e, bookId, qty = 1) {
+      if (e) e.stopPropagation();
+      const existing = appState.cart.find(item => item.bookId === bookId);
+      if (existing) existing.qty += qty;
+      else appState.cart.push({ bookId, qty });
+
+      saveState('cart', appState.cart);
+      const book = appState.books.find(b => b.id === bookId);
+      showToast(`'${book.title.substring(0, 25)}...' added to Cart!`, "success");
+    }
+
+    function updateCartQty(bookId, delta) {
+      const item = appState.cart.find(i => i.bookId === bookId);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          appState.cart = appState.cart.filter(i => i.bookId !== bookId);
+        }
+        saveState('cart', appState.cart);
+        renderCartView();
+      }
+    }
+
+    function removeFromCart(bookId) {
+      appState.cart = appState.cart.filter(i => i.bookId !== bookId);
+      saveState('cart', appState.cart);
+      renderCartView();
+      showToast("Item removed from Cart", "info");
+    }
+
+    function toggleWishlist(e, bookId) {
+      if (e) e.stopPropagation();
+      const index = appState.wishlist.indexOf(bookId);
+      if (index > -1) {
+        appState.wishlist.splice(index, 1);
+        showToast("Removed from Wishlist", "info");
+      } else {
+        appState.wishlist.push(bookId);
+        showToast("Added to Wishlist!", "success");
+      }
+      saveState('wishlist', appState.wishlist);
+
+      if (currentView === 'wishlist') renderWishlistView();
+      else if (currentView === 'home') renderHome();
+      else if (currentView === 'catalogue') applyFilters();
+    }
+
+    function moveAllWishlistToCart() {
+      appState.wishlist.forEach(bookId => {
+        if (!appState.cart.find(i => i.bookId === bookId)) {
+          appState.cart.push({ bookId, qty: 1 });
+        }
+      });
+      appState.wishlist = [];
+      saveState('cart', appState.cart);
+      saveState('wishlist', appState.wishlist);
+      showToast("All items moved to Cart!", "success");
+      navigateTo('cart');
+    }
+
+    /* --------------------------------------------------------------------------
+       6. QUICK VIEW & COMPARE MODALS
+       -------------------------------------------------------------------------- */
+    function openQuickView(bookId) {
+      const book = appState.books.find(b => b.id === bookId);
+      if (!book) return;
+
+      const html = `
+        <div style="display:grid; grid-template-columns: 200px 1fr; gap: 1.5rem;">
+          <img src="${book.cover}" style="width:100%; height:280px; object-fit:cover; border-radius:var(--radius-sm);">
+          <div>
+            <span class="badge" style="margin-bottom:0.5rem; display:inline-block;">${book.category}</span>
+            <h3 class="brand-font" style="font-size:1.4rem; margin-bottom:0.4rem;">${book.title}</h3>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:0.75rem;">by ${book.author}</p>
+            <div style="color:var(--gold); margin-bottom:0.75rem;"><i class="fa-solid fa-star"></i> ${book.rating} (${book.reviewsCount} reviews)</div>
+            <div style="font-size:1.5rem; font-weight:800; color:var(--gold); margin-bottom:1rem;">₹${book.discountPrice} <small style="text-decoration:line-through; color:var(--text-muted); font-size:0.9rem;">₹${book.originalPrice}</small></div>
+            <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5; margin-bottom:1.5rem;">${book.description}</p>
+            <div style="display:flex; gap:0.75rem;">
+              <button class="btn-gold" onclick="addToCart(null, ${book.id}); closeModal('quick-view-modal');">Add to Cart</button>
+              <button class="btn-outline-gold" onclick="navigateTo('details', ${book.id}); closeModal('quick-view-modal');">View Details</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('quick-view-modal-content').innerHTML = html;
+      document.getElementById('quick-view-modal').classList.add('active');
+    }
+
+    function toggleCompare(bookId) {
+      const idx = appState.compare.indexOf(bookId);
+      if (idx > -1) {
+        appState.compare.splice(idx, 1);
+        showToast("Removed from comparison", "info");
+      } else {
+        if (appState.compare.length >= 3) {
+          showToast("You can compare maximum 3 books", "warning");
+          return;
+        }
+        appState.compare.push(bookId);
+        showToast("Added to Compare!", "success");
+      }
+
+      const bar = document.getElementById('compare-floating-bar');
+      document.getElementById('compare-count-num').textContent = appState.compare.length;
+      bar.style.display = appState.compare.length > 0 ? 'flex' : 'none';
+      if (currentView === 'catalogue') applyFilters();
+    }
+
+    function clearCompareList() {
+      appState.compare = [];
+      document.getElementById('compare-floating-bar').style.display = 'none';
+      if (currentView === 'catalogue') applyFilters();
+    }
+
+    function openCompareModal() {
+      const books = appState.books.filter(b => appState.compare.includes(b.id));
+      if (books.length === 0) return;
+
+      let html = `<table class="cart-table" style="text-align:center;"><tr><th>Feature</th>`;
+      books.forEach(b => html += `<th>${b.title}</th>`);
+      html += `</tr>`;
+
+      // Rows
+      html += `<tr><td>Cover</td>${books.map(b => `<td><img src="${b.cover}" style="width:60px; height:80px; object-fit:cover;"></td>`).join('')}</tr>`;
+      html += `<tr><td>Price</td>${books.map(b => `<td style="font-weight:700; color:var(--gold);">₹${b.discountPrice}</td>`).join('')}</tr>`;
+      html += `<tr><td>Author</td>${books.map(b => `<td>${b.author}</td>`).join('')}</tr>`;
+      html += `<tr><td>Category</td>${books.map(b => `<td>${b.category}</td>`).join('')}</tr>`;
+      html += `<tr><td>Rating</td>${books.map(b => `<td>${b.rating} ★</td>`).join('')}</tr>`;
+      html += `<tr><td>Pages</td>${books.map(b => `<td>${b.pages} pages</td>`).join('')}</tr>`;
+      html += `<tr><td>Language</td>${books.map(b => `<td>${b.language}</td>`).join('')}</tr>`;
+
+      html += `</table>`;
+      document.getElementById('compare-modal-content').innerHTML = html;
+      document.getElementById('compare-modal').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    /* --------------------------------------------------------------------------
+       7. LIVE SEARCH & THEME TOGGLE & TOASTS
+       -------------------------------------------------------------------------- */
+    function handleSearchInput(query) {
+      const box = document.getElementById('search-suggestions-box');
+      const clearBtn = document.getElementById('clear-search-btn');
+
+      if (!query.trim()) {
+        box.style.display = 'none';
+        clearBtn.style.display = 'none';
+        return;
+      }
+
+      clearBtn.style.display = 'block';
+      const q = query.toLowerCase();
+      const matches = appState.books.filter(b =>
+        b.title.toLowerCase().includes(q) ||
+        b.author.toLowerCase().includes(q) ||
+        b.category.toLowerCase().includes(q)
+      ).slice(0, 6);
+
+      if (matches.length === 0) {
+        box.innerHTML = `<div style="padding:1rem; color:var(--text-muted); font-size:0.85rem;">No matching books found</div>`;
+      } else {
+        box.innerHTML = matches.map(b => `
+          <div class="suggestion-item" onclick="navigateTo('details', ${b.id}); clearSearch();">
+            <img src="${b.cover}">
+            <div>
+              <div style="font-weight:600; font-size:0.88rem;">${b.title}</div>
+              <small style="color:var(--text-muted);">${b.author} • <span style="color:var(--gold);">₹${b.discountPrice}</span></small>
+            </div>
+          </div>
+        `).join('');
+      }
+      box.style.display = 'block';
+    }
+
+    function clearSearch() {
+      document.getElementById('global-search-input').value = '';
+      document.getElementById('search-suggestions-box').style.display = 'none';
+      document.getElementById('clear-search-btn').style.display = 'none';
+    }
+
+    function toggleTheme() {
+      appState.theme = (appState.theme === 'dark') ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', appState.theme);
+      localStorage.setItem('bookhub_theme', appState.theme);
+      updateThemeIcon();
+      showToast(`Switched to ${appState.theme.toUpperCase()} mode`, "info");
+    }
+
+    function updateThemeIcon() {
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.className = (appState.theme === 'dark') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    function showToast(message, type = "info") {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+
+      let icon = 'fa-circle-info';
+      if (type === 'success') icon = 'fa-circle-check';
+      else if (type === 'warning') icon = 'fa-triangle-exclamation';
+
+      toast.innerHTML = `<i class="fa-solid ${icon}" style="color:var(--gold);"></i> <span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function openUserMenu() {
+      navigateTo('profile');
+    }
+
+    function openPwaInstallModal() {
+      document.getElementById('pwa-modal').classList.add('active');
+    }
+    function triggerPWAInstall() {
+      showToast("App install prompt initialized! (Demo Mode)", "success");
+      closeModal('pwa-modal');
+    }
+
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      showToast("Subscribed successfully! Check your email for coupons.", "success");
+      e.target.reset();
+    }
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      showToast("Your message has been sent to BOOKHUB support!", "success");
+      e.target.reset();
+    }
+
+    /* Timer countdown for offers */
+    setInterval(() => {
+      const secsEl = document.getElementById('timer-secs');
+      if (!secsEl) return;
+      let s = parseInt(secsEl.textContent) - 1;
+      if (s < 0) s = 59;
+      secsEl.textContent = String(s).padStart(2, '0');
+    }, 1000);
+
+    /* Page Initialization */
+    window.addEventListener('DOMContentLoaded', () => {
+      initStorage();
+
+      // Hide loader
+      setTimeout(() => {
+        const loader = document.getElementById('page-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.style.display = 'none', 500);
+        }
+      }, 600);
+
+      renderHome();
+    });
+  </script>
+</body>
+
+</html>
